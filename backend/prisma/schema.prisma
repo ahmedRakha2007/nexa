@@ -1,0 +1,81 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum AuthProvider {
+  LOCAL
+  GOOGLE
+}
+
+enum FriendshipStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  CANCELED
+}
+
+model User {
+  id                  String          @id @default(uuid()) @db.Uuid
+
+  display_name        String
+  username            String          @unique
+  email               String          @unique
+
+  password_hash       String?
+  provider            AuthProvider    @default(LOCAL)
+  provider_id         String?         @unique
+
+  birth_date          DateTime
+
+  profile_picture_url String?
+  bio                 String?
+
+  created_at          DateTime        @default(now())
+  updated_at          DateTime        @updatedAt
+
+  posts               Post[]
+
+  sent_requests       Friendship[]    @relation("SentRequests")
+  received_requests   Friendship[]    @relation("ReceivedRequests")
+}
+
+model Post {
+  id          String    @id @default(uuid()) @db.Uuid
+
+  content     String?
+  image_url   String?
+
+  user_id     String    @db.Uuid
+  user        User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
+}
+
+model Friendship {
+  id           String              @id @default(uuid()) @db.Uuid
+
+  sender_id    String              @db.Uuid
+  receiver_id  String              @db.Uuid
+
+  sender       User                @relation("SentRequests", fields: [sender_id], references: [id], onDelete: Cascade)
+  receiver     User                @relation("ReceivedRequests", fields: [receiver_id], references: [id], onDelete: Cascade)
+
+  status       FriendshipStatus    @default(PENDING)
+
+  created_at   DateTime            @default(now())
+  updated_at   DateTime            @updatedAt
+
+  @@unique([sender_id, receiver_id])
+}
