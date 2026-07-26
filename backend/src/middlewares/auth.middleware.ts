@@ -1,4 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
+import createError from "http-errors";
 import { verifyToken } from "../utils/jwt.ts";
 
 interface AuthRequest extends Request {
@@ -10,40 +11,30 @@ const authMiddleware = (
   res: Response,
   next: NextFunction
 ) => {
-  try {
-    // Get Authorization header
-    const authorization = req.headers.authorization;
+  const authorization = req.headers.authorization;
 
-    // Check if header exists
-    if (!authorization) {
-      return res.status(401).json({
-        message: "U are not logged in",
-      });
-    }
+if (!authorization) {
+  throw createError(401, "Authorization header is required.");
+}
 
-    // Check Bearer format
-    if (!authorization.startsWith("Bearer ")) {
-      return res.status(401).json({
-        message: "Invalid authorization format.",
-      });
-    }
+if (!authorization.startsWith("Bearer ")) {
+  throw createError(401, "Authorization header must use the Bearer scheme.");
+}
 
-    // Extract token
-    const token = authorization.split(" ")[1]!;
+const token = authorization.split(" ")[1];
 
-    // Verify token
-    const payload = verifyToken(token);
+if (!token) {
+  throw createError(401, "Bearer token is missing.");
+}
 
-    // Attach payload to request
-    req.user = payload;
+try {
+  const payload = verifyToken(token);
+  req.user = payload;
+} catch {
+  throw createError(401, "Invalid or expired access token.");
+}
 
-    // Continue to the next middleware/controller
-    next();
-  } catch (error) {
-    return res.status(401).json({
-      message: "Invalid or expired token.",
-    });
-  }
+next();
 };
 
 export default authMiddleware;

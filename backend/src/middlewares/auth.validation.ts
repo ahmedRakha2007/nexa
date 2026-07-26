@@ -4,11 +4,11 @@ export const signUpValidation = [
   // Reject unknown fields
   body().custom((value) => {
     const allowedFields = [
-      "displayName",
+      "display_name",
       "username",
       "email",
       "password",
-      "birthDate",
+      "birth_date",
     ];
 
     const receivedFields = Object.keys(value);
@@ -27,12 +27,14 @@ export const signUpValidation = [
   }),
 
   // Validate displayName
-  body("displayName")
+  body("display_name")
+    .trim()
     .notEmpty()
     .withMessage("Display name is required"),
 
   // Validate username
   body("username")
+    .trim()
     .notEmpty()
     .withMessage("Username is required")
     .isLength({ min: 3, max: 30 })
@@ -40,6 +42,7 @@ export const signUpValidation = [
 
   // Validate email
   body("email")
+    .trim()
     .notEmpty()
     .withMessage("Email is required")
     .isEmail()
@@ -47,13 +50,15 @@ export const signUpValidation = [
 
   // Validate password
   body("password")
+    .trim()
     .notEmpty()
     .withMessage("Password is required")
     .isLength({ min: 8 })
     .withMessage("Password must be at least 8 characters"),
 
   // Validate birthDate
-  body("birthDate")
+  body("birth_date")
+    .trim()
     .notEmpty()
     .withMessage("Birth date is required")
     .isISO8601()
@@ -90,6 +95,7 @@ const signInValidation = [
 
   // Validate password
   body("password")
+    .trim()
     .notEmpty()
     .withMessage("Password is required."),
 ];

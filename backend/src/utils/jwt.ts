@@ -1,16 +1,13 @@
 import jwt from "jsonwebtoken";
 import { env } from "../config/env.ts";
 
-export interface JwtPayload {
-  userId: string;
-}
 
-export function generateToken(payload: JwtPayload): string {
+export function generateToken(payload: {userId: string}): string {
   return jwt.sign(payload, env.JWT_SECRET as jwt.Secret, {
     expiresIn: env.JWT_EXPIRES_IN,
   } as jwt.SignOptions);
 }
 
-export function verifyToken(token: string): JwtPayload {
-  return jwt.verify(token, env.JWT_SECRET) as JwtPayload;
-}
+export function verifyToken(token: string): {userId: string} {
+  return jwt.verify(token, env.JWT_SECRET!) as {userId: string};
+} 

@@ -1,6 +1,7 @@
 import { prisma } from "../../config/prisma.ts";
 import { generateToken } from "../../utils/jwt.ts";
 import { comparePassword } from "../../utils/password.ts";
+import createError from "http-errors";
 
 export interface SignInInput {
   identifier: string;
@@ -34,12 +35,12 @@ const signInService = async ({
   });
 
   if (!user) {
-    throw new Error("Invalid credentials.");
+    throw  createError(400, "Invalid credentials.");
   }
 
   if (user.provider === "GOOGLE") {
-    throw new Error(
-      "This account uses Google Sign-In. Please continue with Google."
+    throw  createError(
+      400, "This account uses Google Sign-In. Please continue with Google."
     );
   }
 
@@ -49,7 +50,7 @@ const signInService = async ({
   );
 
   if (!isPasswordCorrect) {
-    throw new Error("Invalid credentials.");
+    throw createError(404, "Invalid credentials.");
   }
 
   const token = generateToken({

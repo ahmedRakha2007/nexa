@@ -4,17 +4,17 @@ import { generateToken } from "../../utils/jwt.ts";
 import { hashPassword } from "../../utils/password.ts";
 
 interface SignUpInput {
-  displayName: string;
+  display_name: string;
   username: string;
   email: string;
   password: string;
-  birthDate: string;
+  birth_date: string;
 }
 
 const signUpService = async (data: SignUpInput) => {
-  const { displayName, username, email, password, birthDate } = data;
+  const { display_name, username, email, password, birth_date } = data;
 
-  const parsedBirthDate = new Date(birthDate);
+  const parsedBirthDate = new Date(birth_date);
 
   if (!isAdult(parsedBirthDate)) {
     throw new Error("You must be at least 18 years old.");
@@ -40,7 +40,7 @@ const signUpService = async (data: SignUpInput) => {
 
   const user = await prisma.user.create({
     data: {
-      display_name: displayName,
+      display_name: display_name,
       username,
       email,
       password_hash: hashedPassword,
