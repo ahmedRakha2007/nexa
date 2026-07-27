@@ -2,6 +2,7 @@ import { prisma } from "../../config/prisma.ts";
 import { isAdult } from "../../utils/date.ts";
 import { generateToken } from "../../utils/jwt.ts";
 import { hashPassword } from "../../utils/password.ts";
+import createError from "http-errors";
 
 interface SignUpInput {
   display_name: string;
@@ -17,24 +18,24 @@ const signUpService = async (data: SignUpInput) => {
   const parsedBirthDate = new Date(birth_date);
 
   if (!isAdult(parsedBirthDate)) {
-    throw new Error("You must be at least 18 years old.");
-  }
+  throw createError(400, "You must be at least 18 years old.");
+}
 
   const existingEmail = await prisma.user.findUnique({
     where: { email },
   });
 
   if (existingEmail) {
-    throw new Error("Email already exists.");
-  }
+  throw createError(409, "Email already exists.");
+}
 
   const existingUsername = await prisma.user.findUnique({
     where: { username },
   });
 
-  if (existingUsername) {
-    throw new Error("Username already exists.");
-  }
+ if (existingUsername) {
+  throw createError(409, "Username already exists.");
+}
 
   const hashedPassword = await hashPassword(password);
 
