@@ -1,5 +1,5 @@
 import createError from "http-errors";
-import { Prisma } from "../../../generated/prisma/client.ts"
+import { Prisma } from "../../generated/prisma/client.ts"
 import { prisma } from "../../config/prisma.ts";
 import { deleteImage, uploadImage } from "../../utils/cloudinary.ts";
 
