@@ -1,0 +1,20 @@
+import express from "express";
+import authRoutes from "./routes/auth.routes.js";
+import postRoutes from "./routes/posts.routes.js";
+import errorHandler from "./middlewares/errorHandler.js";
+import profileRoutes from "./routes/profile.routes.js";
+import feedRouter from "./routes/feed.routes.js";
+import friendShipRouter from "./routes/friendship.routes.js";
+import swaggerUi from "swagger-ui-express";
+import swaggerSpec from "./config/swagger.js";
+const app = express();
+app.use(express.json());
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use("/v1/auth", authRoutes);
+app.use("/v1/posts", postRoutes);
+app.use("/v1/profile", profileRoutes);
+app.use("/v1/feed", feedRouter);
+app.use("/v1/friend-requests", friendShipRouter);
+app.use(errorHandler);
+export default app;
+//# sourceMappingURL=app.js.map
