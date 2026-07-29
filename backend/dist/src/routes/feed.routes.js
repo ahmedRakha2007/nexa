@@ -5,8 +5,8 @@
  *   description: Feed endpoints
  */
 import { Router } from "express";
-import { getFeed, getFriendsFeed } from "../controllers/feed.controller.js";
-import authMiddleware from "../middlewares/auth.middleware.js";
+import { getFeed, getFriendsFeed } from "../controllers/feed.controller.ts";
+import authMiddleware from "../middlewares/auth.middleware.ts";
 const feedRouter = Router();
 /**
  * @swagger

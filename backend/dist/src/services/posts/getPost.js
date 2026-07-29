@@ -1,6 +1,6 @@
 // services/post.service.ts
 import createError from "http-errors";
-import { prisma } from "../../config/prisma.js";
+import { prisma } from "../../config/prisma.ts";
 export const getPostService = async (id) => {
     const post = await prisma.post.findUnique({
         where: {

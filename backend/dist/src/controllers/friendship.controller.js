@@ -1,11 +1,11 @@
-import sendRequestService from "../services/friendShips/sendRequest.js";
-import getReceivedFriendRequestsService from "../services/friendShips/getReceivedFriendRequests.js";
-import getSentFriendRequestsService from "../services/friendShips/getSentFriendRequests.js";
-import acceptFriendRequestService from "../services/friendShips/acceptFriendRequest.js";
-import rejectFriendRequestService from "../services/friendShips/rejectFriendRequest.js";
-import deleteFriendService from "../services/friendShips/deleteFriend.js";
-import getFriendsService from "../services/friendShips/getFriends.js";
-import cancelFriendRequestService from "../services/friendShips/cancelFriendRequest.js";
+import sendRequestService from "../services/friendShips/sendRequest.ts";
+import getReceivedFriendRequestsService from "../services/friendShips/getReceivedFriendRequests.ts";
+import getSentFriendRequestsService from "../services/friendShips/getSentFriendRequests.ts";
+import acceptFriendRequestService from "../services/friendShips/acceptFriendRequest.ts";
+import rejectFriendRequestService from "../services/friendShips/rejectFriendRequest.ts";
+import deleteFriendService from "../services/friendShips/deleteFriend.ts";
+import getFriendsService from "../services/friendShips/getFriends.ts";
+import cancelFriendRequestService from "../services/friendShips/cancelFriendRequest.ts";
 export const sendRequest = async (req, res) => {
     const { userId } = req.user;
     const { receiver_id } = req.body;

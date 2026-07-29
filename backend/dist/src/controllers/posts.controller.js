@@ -1,7 +1,7 @@
-import createPostService from "../services/posts/createPost.js";
-import getPostService from "../services/posts/getPost.js";
-import editPostService from "../services/posts/editPost.js";
-import deletePostService from "../services/posts/deletePost.js";
+import createPostService from "../services/posts/createPost.ts";
+import getPostService from "../services/posts/getPost.ts";
+import editPostService from "../services/posts/editPost.ts";
+import deletePostService from "../services/posts/deletePost.ts";
 export async function createPost(req, res) {
     const { userId } = req.user;
     const { file } = req;

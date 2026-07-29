@@ -5,11 +5,11 @@
  *   description: User profile endpoints
  */
 import { Router } from "express";
-import authMiddleware from "../middlewares/auth.middleware.js";
-import { getProfile, getProfilePosts, updateProfile, } from "../controllers/profile.controller.js";
-import { updateProfileValidation } from "../middlewares/profile.validation.js";
-import { validateRequest } from "../middlewares/validateRequest.js";
-import upload from "../middlewares/upload.middleware.js";
+import authMiddleware from "../middlewares/auth.middleware.ts";
+import { getProfile, getProfilePosts, updateProfile, } from "../controllers/profile.controller.ts";
+import { updateProfileValidation } from "../middlewares/profile.validation.ts";
+import { validateRequest } from "../middlewares/validateRequest.ts";
+import upload from "../middlewares/upload.middleware.ts";
 const profileRoutes = Router();
 /**
  * @swagger

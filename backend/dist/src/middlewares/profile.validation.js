@@ -1,5 +1,5 @@
 import { body } from "express-validator";
-import { validateRequest } from "./validateRequest.js";
+import { validateRequest } from "./validateRequest.ts";
 export const updateProfileValidation = [
     body()
         .custom((_, { req }) => {

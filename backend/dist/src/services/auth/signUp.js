@@ -1,7 +1,7 @@
-import { prisma } from "../../config/prisma.js";
-import { isAdult } from "../../utils/date.js";
-import { generateToken } from "../../utils/jwt.js";
-import { hashPassword } from "../../utils/password.js";
+import { prisma } from "../../config/prisma.ts";
+import { isAdult } from "../../utils/date.ts";
+import { generateToken } from "../../utils/jwt.ts";
+import { hashPassword } from "../../utils/password.ts";
 import createError from "http-errors";
 const signUpService = async (data) => {
     const { display_name, username, email, password, birth_date } = data;

@@ -1,4 +1,4 @@
-import { prisma } from "../../config/prisma.js";
+import { prisma } from "../../config/prisma.ts";
 import createError from "http-errors";
 const getProfileService = async (username) => {
     const profile = await prisma.user.findUnique({

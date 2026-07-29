@@ -5,11 +5,11 @@
  *   description: Post management endpoints
  */
 import { Router } from "express";
-import authMiddleware from "../middlewares/auth.middleware.js";
-import { createPost, deletePost, editPost, getPost, } from "../controllers/posts.controller.js";
-import { createPostValidation, editPostValidation, postIdValidation, } from "../middlewares/posts.validation.js";
-import { validateRequest } from "../middlewares/validateRequest.js";
-import upload from "../middlewares/upload.middleware.js";
+import authMiddleware from "../middlewares/auth.middleware.ts";
+import { createPost, deletePost, editPost, getPost, } from "../controllers/posts.controller.ts";
+import { createPostValidation, editPostValidation, postIdValidation, } from "../middlewares/posts.validation.ts";
+import { validateRequest } from "../middlewares/validateRequest.ts";
+import upload from "../middlewares/upload.middleware.ts";
 const postRoutes = Router();
 /**
  * @swagger

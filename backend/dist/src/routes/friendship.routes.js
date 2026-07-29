@@ -5,10 +5,10 @@
  *   description: Friend request and friendship management
  */
 import { Router } from "express";
-import authMiddleware from "../middlewares/auth.middleware.js";
-import { acceptFriendRequest, getReceivedFriendRequests, getSentFriendRequests, sendRequest, rejectFriendRequest, cancelFriendRequest, removeFriend, getFriends, } from "../controllers/friendship.controller.js";
-import { friendShipIdValidation, sendFriendRequestValidation, } from "../middlewares/friendShip.validation.js";
-import { validateRequest } from "../middlewares/validateRequest.js";
+import authMiddleware from "../middlewares/auth.middleware.ts";
+import { acceptFriendRequest, getReceivedFriendRequests, getSentFriendRequests, sendRequest, rejectFriendRequest, cancelFriendRequest, removeFriend, getFriends, } from "../controllers/friendship.controller.ts";
+import { friendShipIdValidation, sendFriendRequestValidation, } from "../middlewares/friendShip.validation.ts";
+import { validateRequest } from "../middlewares/validateRequest.ts";
 const friendShipRouter = Router();
 /**
  * @swagger

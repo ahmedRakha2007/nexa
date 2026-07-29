@@ -1,6 +1,6 @@
 import createError from "http-errors";
-import { prisma } from "../../config/prisma.js";
-import { deleteImage, uploadImage } from "../../utils/cloudinary.js";
+import { prisma } from "../../config/prisma.ts";
+import { deleteImage, uploadImage } from "../../utils/cloudinary.ts";
 const updateProfileService = async (file, display_name, username, bio, userId) => {
     // Check if the user exists
     const currentProfile = await prisma.user.findUnique({

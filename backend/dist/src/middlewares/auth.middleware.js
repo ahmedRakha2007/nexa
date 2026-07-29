@@ -1,5 +1,5 @@
 import createError from "http-errors";
-import { verifyToken } from "../utils/jwt.js";
+import { verifyToken } from "../utils/jwt.ts";
 const authMiddleware = (req, res, next) => {
     const authorization = req.headers.authorization;
     if (!authorization) {

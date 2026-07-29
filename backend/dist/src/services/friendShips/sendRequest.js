@@ -1,5 +1,5 @@
 import createError from "http-errors";
-import { prisma } from "../../config/prisma.js";
+import { prisma } from "../../config/prisma.ts";
 const sendRequestService = async (userId, receiver_id) => {
     // Can't send a request to yourself
     if (userId === receiver_id) {

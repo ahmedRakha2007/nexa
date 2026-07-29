@@ -1,6 +1,6 @@
 import createError from "http-errors";
-import { prisma } from "../../config/prisma.js";
-import { deleteImage } from "../../utils/cloudinary.js";
+import { prisma } from "../../config/prisma.ts";
+import { deleteImage } from "../../utils/cloudinary.ts";
 const deletePostService = async (id, userId) => {
     const post = await prisma.post.findUnique({
         where: {

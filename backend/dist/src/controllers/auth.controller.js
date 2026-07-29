@@ -1,5 +1,5 @@
-import signInService from "../services/auth/signIn.js";
-import signUpService from "../services/auth/signUp.js";
+import signInService from "../services/auth/signIn.ts";
+import signUpService from "../services/auth/signUp.ts";
 export async function signUp(req, res) {
     const response = await signUpService(req.body);
     return res.status(201).json(response);

@@ -1,6 +1,6 @@
-import { prisma } from "../../config/prisma.js";
-import { generateToken } from "../../utils/jwt.js";
-import { comparePassword } from "../../utils/password.js";
+import { prisma } from "../../config/prisma.ts";
+import { generateToken } from "../../utils/jwt.ts";
+import { comparePassword } from "../../utils/password.ts";
 import createError from "http-errors";
 const signInService = async ({ identifier, password, }) => {
     const user = await prisma.user.findFirst({

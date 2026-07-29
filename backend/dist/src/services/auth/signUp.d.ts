@@ -15,7 +15,7 @@ declare const signUpService: (data: SignUpInput) => Promise<{
         email: string;
         id: string;
         profile_picture_url: string | null;
-        provider: import("../../../generated/prisma/enums.ts").AuthProvider;
+        provider: import("../../generated/prisma/enums.ts").AuthProvider;
         updated_at: Date;
         username: string;
     };

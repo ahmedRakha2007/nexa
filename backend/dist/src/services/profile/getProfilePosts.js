@@ -1,5 +1,5 @@
 import createError from "http-errors";
-import { prisma } from "../../config/prisma.js";
+import { prisma } from "../../config/prisma.ts";
 const getProfilePostsService = async (username, page, limit) => {
     const user = await prisma.user.findUnique({
         where: {

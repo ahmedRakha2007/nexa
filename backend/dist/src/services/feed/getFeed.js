@@ -1,4 +1,4 @@
-import { prisma } from "../../config/prisma.js";
+import { prisma } from "../../config/prisma.ts";
 const getFeedService = async (page, limit) => {
     const [totalPosts, posts] = await Promise.all([
         prisma.post.count({}),

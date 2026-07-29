@@ -1,6 +1,6 @@
 import { response } from "express";
-import getFeedService from "../services/feed/getFeed.js";
-import getFriendsFeedService from "../services/feed/getFriendsFeed.js";
+import getFeedService from "../services/feed/getFeed.ts";
+import getFriendsFeedService from "../services/feed/getFriendsFeed.ts";
 export const getFeed = async (req, res) => {
     const page = Number(req.query.page) || 1;
     const limit = Number(req.query.limit) || 10;

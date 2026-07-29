@@ -1,4 +1,4 @@
-import { prisma } from "../../config/prisma.js";
+import { prisma } from "../../config/prisma.ts";
 const getFriendsFeedService = async (userId, page, limit) => {
     const friendships = await prisma.friendship.findMany({
         where: {

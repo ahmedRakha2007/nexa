@@ -1,7 +1,7 @@
-import getProfileService from "../services/profile/getProfile.js";
-import getProfilePostsService from "../services/profile/getProfilePosts.js";
+import getProfileService from "../services/profile/getProfile.ts";
+import getProfilePostsService from "../services/profile/getProfilePosts.ts";
 import { success } from "zod";
-import updateProfileService from "../services/profile/updateProfile.js";
+import updateProfileService from "../services/profile/updateProfile.ts";
 export const getProfile = async (req, res) => {
     const { username } = req.params;
     const profile = await getProfileService(username);

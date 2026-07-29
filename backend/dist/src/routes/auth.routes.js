@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { signIn, signUp } from "../controllers/auth.controller.js";
-import signInValidation, { signUpValidation } from "../middlewares/auth.validation.js";
-import { validateRequest } from "../middlewares/validateRequest.js";
+import { signIn, signUp } from "../controllers/auth.controller.ts";
+import signInValidation, { signUpValidation } from "../middlewares/auth.validation.ts";
+import { validateRequest } from "../middlewares/validateRequest.ts";
 const authRoutes = Router();
 /**
  * @swagger

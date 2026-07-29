@@ -1,5 +1,5 @@
 import createError from "http-errors";
-import { prisma } from "../../config/prisma.js";
+import { prisma } from "../../config/prisma.ts";
 const rejectFriendRequestService = async (id, userId) => {
     const friendship = await prisma.friendship.findUnique({
         where: {

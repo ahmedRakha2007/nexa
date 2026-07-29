@@ -1,5 +1,5 @@
-import { prisma } from "../../config/prisma.js";
-import { uploadImage } from "../../utils/cloudinary.js";
+import { prisma } from "../../config/prisma.ts";
+import { uploadImage } from "../../utils/cloudinary.ts";
 const createPostService = async (content, file, userId) => {
     let imageUrl = null;
     let imagePublicId = null;
