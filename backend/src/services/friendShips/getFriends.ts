@@ -33,6 +33,7 @@ const getFriendsService = async (userId: string) => {
     },
   });
 
+
   return friendships.map((friendship) => {
     const friend = friendship.sender_id === userId ? friendship.receiver : friendship.sender;
 
