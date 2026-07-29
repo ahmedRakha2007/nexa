@@ -1,7 +1,7 @@
 import createError from "http-errors";
 import { prisma } from "../../config/prisma.ts";
 import { deleteImage, uploadImage } from "../../utils/cloudinary.ts";
-import type { Prisma } from "../../../generated/prisma/client.ts";
+import type { Prisma } from "../../generated/prisma/client.ts";
 
 const updateProfileService = async (
   file: Express.Multer.File | undefined,
