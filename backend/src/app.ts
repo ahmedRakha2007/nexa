@@ -7,9 +7,15 @@ import feedRouter from "./routes/feed.routes.ts";
 import friendShipRouter from "./routes/friendship.routes.ts";
 import swaggerUi from "swagger-ui-express";
 import swaggerSpec from "./config/swagger.ts";
+import cors from "cors";
 
 const app = express();
 
+app.use(
+  cors({
+    origin: "http://localhost:8080",
+  })
+);
 
 app.use(express.json());
 
