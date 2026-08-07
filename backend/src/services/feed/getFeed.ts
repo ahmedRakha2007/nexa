@@ -14,6 +14,7 @@ const getFeedService  = async (page: number, limit: number) => {
                 take: limit,
                 select: {
                     id: true,
+                    user_id: true,
                     content: true,
                     image_url: true,
                     created_at: true,
