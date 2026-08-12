@@ -36,6 +36,7 @@ const getProfileService = async (username: string) => {
     })
 
     return  {
+        id: profile.id,
         display_name: profile.display_name,
         username: profile.username,
         profile_picture_url: profile.profile_picture_url,
