@@ -93,13 +93,18 @@ export const removeFriend = async (req: Request<{id: string}> & { user?: any }, 
     });
 };
 
-export const getFriends = async (req: Request & { user?: any }, res: Response) => {
-    const { userId } = req.user;
+export const getFriends = async (
+  req: Request & { user?: any },
+  res: Response
+) => {
+  const { userId } = req.user;
 
-    const friends = await getFriendsService(userId);
+  const search = req.query.search as string | undefined;
 
-    return res.status(200).json({
-        "success": true,
-        friends,
-    });
+  const friends = await getFriendsService(userId, search);
+
+  return res.status(200).json({
+    success: true,
+    friends,
+  });
 };
