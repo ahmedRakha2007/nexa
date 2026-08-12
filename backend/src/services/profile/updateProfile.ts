@@ -70,13 +70,19 @@ const updateProfileService = async (
     data.profile_picture_id = public_id;
   }
 
-   await prisma.user.update({
+   const user = await prisma.user.update({
     where: {
       id: userId,
     },
+    select: {
+      display_name: true,
+      username: true,
+      bio: true,
+      profile_picture_url: true
+    },
     data,
   });
-
+ return user
 };
 
 export default updateProfileService;

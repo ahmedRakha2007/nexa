@@ -30,10 +30,11 @@ export const updateProfile = async (req: Request & { user?: { userId: string } }
     const { display_name, username, bio } = req.body;
     const {userId} = req.user!
     
-    await updateProfileService(file, display_name, username, bio, userId);
+    const response = await updateProfileService(file, display_name, username, bio, userId);
     return res.status(201).json({
         success: true,
-        message: "Profile updated successfully"
+        message: "Profile updated successfully",
+        user: response
     })
 
 }
