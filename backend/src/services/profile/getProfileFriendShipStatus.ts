@@ -42,12 +42,14 @@ export const getProfileFriendShipStatusService = async (
 
   if (friendship.status === "ACCEPTED") {
     return {
+      friendship_id: friendship.id,
       status: "ACCEPTED",
     };
   }
 
   if (friendship.status === "PENDING") {
     return {
+      friendship_id: friendship.id,
       status: "PENDING",
       direction:
         friendship.sender_id === currentUserId
