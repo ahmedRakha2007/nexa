@@ -9,6 +9,7 @@ import { Router } from "express";
 import authMiddleware from "../middlewares/auth.middleware.ts";
 import {
   getProfile,
+  getProfileFriendShipStatus,
   getProfilePosts,
   updateProfile,
 } from "../controllers/profile.controller.ts";
@@ -112,6 +113,12 @@ profileRoutes.patch(
   updateProfileValidation,
   validateRequest,
   updateProfile
+);
+
+profileRoutes.get(
+  "/:username/friendship-status",
+  authMiddleware,
+  getProfileFriendShipStatus
 );
 
 export default profileRoutes;

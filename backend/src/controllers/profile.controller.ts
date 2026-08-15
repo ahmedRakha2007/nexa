@@ -1,8 +1,8 @@
 import type { Request, Response } from "express";
 import getProfileService from "../services/profile/getProfile.ts";
 import getProfilePostsService from "../services/profile/getProfilePosts.ts";
-import { success } from "zod";
 import updateProfileService from "../services/profile/updateProfile.ts";
+import { getProfileFriendShipStatusService } from "../services/profile/getProfileFriendShipStatus.ts";
 
 
 export const getProfile = async (req: Request<{ username: string }>, res: Response) => {
@@ -12,7 +12,8 @@ export const getProfile = async (req: Request<{ username: string }>, res: Respon
         success: true,
         profile
     });
-}   
+}  
+
 export const getProfilePosts = async (req: Request<{ username: string }, {}, {}, {page?: string; limit?: string}>, res: Response) => {
     const { username } = req.params;
     const page = Number(req.query.page) || 1
@@ -22,7 +23,27 @@ export const getProfilePosts = async (req: Request<{ username: string }, {}, {},
         success: true,
         posts
     });
-}   
+}  
+
+export const getProfileFriendShipStatus = async (
+    req: Request<{ username: string }> & {
+    user?: { userId: string };
+  },
+  res: Response
+) => {
+  const { username } = req.params;
+  const currentUserId = req.user!.userId;
+
+  const response = await getProfileFriendShipStatusService(
+    currentUserId,
+    username
+  );
+
+  return res.status(200).json({
+    success: true,
+    friend_ship_status: response,
+  });
+};   
 
 export const updateProfile = async (req: Request & { user?: { userId: string } }, res: Response) => {
 
