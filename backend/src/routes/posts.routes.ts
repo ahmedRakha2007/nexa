@@ -12,6 +12,8 @@ import {
   deletePost,
   editPost,
   getPost,
+  likePost,
+  unlikePost,
 } from "../controllers/posts.controller.ts";
 import {
   createPostValidation,
@@ -20,6 +22,7 @@ import {
 } from "../middlewares/posts.validation.ts";
 import { validateRequest } from "../middlewares/validateRequest.ts";
 import upload from "../middlewares/upload.middleware.ts";
+import { optionalAuthMiddleware } from "../middlewares/optionalAuth.middleware.ts";
 
 const postRoutes = Router();
 
@@ -82,7 +85,7 @@ postRoutes.post(
  *       404:
  *         description: Post not found
  */
-postRoutes.get("/:id", postIdValidation, validateRequest, getPost);
+postRoutes.get("/:postId", optionalAuthMiddleware, postIdValidation, validateRequest, getPost);
 
 /**
  * @swagger
@@ -166,5 +169,9 @@ postRoutes.delete(
   validateRequest,
   deletePost
 );
+
+postRoutes.post("/:postId/likes", authMiddleware, likePost);
+
+postRoutes.delete("/:postId/likes", authMiddleware, unlikePost);
 
 export default postRoutes;

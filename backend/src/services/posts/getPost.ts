@@ -1,12 +1,13 @@
-// services/post.service.ts
-
 import createError from "http-errors";
 import { prisma } from "../../config/prisma.ts";
 
-export const getPostService = async (id: string) => {
+export const getPostService = async (
+  userId: string | undefined,
+  postId: string
+) => {
   const post = await prisma.post.findUnique({
     where: {
-      id,
+      id: postId,
     },
     include: {
       user: {
@@ -17,6 +18,11 @@ export const getPostService = async (id: string) => {
           profile_picture_url: true,
         },
       },
+      _count: {
+        select: {
+          likes: true,
+        },
+      },
     },
   });
 
@@ -24,7 +30,25 @@ export const getPostService = async (id: string) => {
     throw createError(404, "Post not found");
   }
 
-  return post;
+  const isLiked = userId
+    ? await prisma.postLike.findUnique({
+        where: {
+          user_id_post_id: {
+            user_id: userId,
+            post_id: postId,
+          },
+        },
+        select: {
+          user_id: true,
+        },
+      })
+    : null;
+
+  return {
+    ...post,
+    likes_count: post._count.likes,
+    is_liked: Boolean(isLiked),
+  };
 };
 
-export default getPostService
+export default getPostService;

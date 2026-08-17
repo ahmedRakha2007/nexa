@@ -50,6 +50,8 @@ model User {
 
   posts               Post[]
 
+  likes               PostLike[]
+
   sent_requests       Friendship[]    @relation("SentRequests")
   received_requests   Friendship[]    @relation("ReceivedRequests")
 }
@@ -63,6 +65,8 @@ model Post {
 
   user_id     String    @db.Uuid
   user        User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  likes       PostLike[]
 
   created_at  DateTime  @default(now())
   updated_at  DateTime  @updatedAt
@@ -83,4 +87,15 @@ model Friendship {
   updated_at   DateTime            @updatedAt
 
   @@unique([sender_id, receiver_id])
+}
+
+model PostLike {
+  user_id    String   @db.Uuid
+  post_id    String   @db.Uuid
+  created_at DateTime @default(now())
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  post Post @relation(fields: [post_id], references: [id], onDelete: Cascade)
+
+  @@id([user_id, post_id])
 }

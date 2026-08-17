@@ -8,6 +8,7 @@
 import { Router } from "express";
 import { getFeed, getFriendsFeed } from "../controllers/feed.controller.ts";
 import authMiddleware from "../middlewares/auth.middleware.ts";
+import { optionalAuthMiddleware } from "../middlewares/optionalAuth.middleware.ts";
 
 const feedRouter = Router();
 
@@ -34,7 +35,7 @@ const feedRouter = Router();
  *       200:
  *         description: Global feed retrieved successfully
  */
-feedRouter.get("/", getFeed);
+feedRouter.get("/", optionalAuthMiddleware, getFeed);
 
 /**
  * @swagger
