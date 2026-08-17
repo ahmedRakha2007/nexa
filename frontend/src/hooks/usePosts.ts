@@ -4,6 +4,7 @@ import {
   createPost,
   deletePost,
   fetchFeed,
+  fetchFriendsFeed,
   fetchUserPosts,
   updatePost,
   UserPostsData,
@@ -16,6 +17,13 @@ export function useFeed(page: number) {
   return useQuery({
     queryKey: ["posts", "feed", page],
     queryFn: () => fetchFeed(page),
+  });
+}
+
+export function useFriendsFeed(page: number) {
+  return useQuery({
+    queryKey: ["posts", "feed", "friends", page],
+    queryFn: () => fetchFriendsFeed(page),
   });
 }
 

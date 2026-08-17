@@ -1,14 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Plus, MessageSquareDashed } from "lucide-react";
-import { RequireAuth } from "@/components/layout/RequireAuth";
+
 import { PostCard } from "@/components/posts/PostCard";
 import { CreatePostModal } from "@/components/posts/CreatePostModal";
 import { Loader } from "@/components/common/Loader";
 import { EmptyState } from "@/components/common/EmptyState";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
-import { useFeed, usePostMutations } from "@/hooks/usePosts";
+import { useFeed, useFriendsFeed, usePostMutations } from "@/hooks/usePosts";
 import { AppLayout } from "@/components/layout/AppLayout";
 
 export const Route = createFileRoute("/")({
@@ -39,14 +39,25 @@ function FeedPage() {
 
 function Feed() {
   const { user } = useAuth();
+
   const [page, setPage] = useState(1);
-  const { data, isLoading } = useFeed(page);
-  const { create, edit, remove } = usePostMutations(user);
+  const [activeTab, setActiveTab] = useState<"feed" | "friends">("feed");
   const [open, setOpen] = useState(false);
 
-  const posts = data?.posts ?? [];
-  const totalPages = data?.total_pages ?? 1;
-  const currentPage = data?.page ?? page;
+  const { data: feedData, isLoading: isFeedLoading } = useFeed(page);
+
+  const { data: friendsFeedData, isLoading: isFriendsFeedLoading } = useFriendsFeed(page);
+
+  const { create, edit, remove } = usePostMutations(user);
+
+  // Decide which data to display
+  const activeData = activeTab === "feed" ? feedData : friendsFeedData;
+
+  const isLoading = activeTab === "feed" ? isFeedLoading : isFriendsFeedLoading;
+
+  const posts = activeData?.posts ?? [];
+  const totalPages = activeData?.total_pages ?? 1;
+  const currentPage = activeData?.page ?? page;
 
   const visiblePageNumbers = useMemo(() => {
     if (totalPages <= 1) {
@@ -55,7 +66,9 @@ function Feed() {
 
     const pageWindow = window.innerWidth < 640 ? 3 : 5;
     const halfWindow = Math.floor(pageWindow / 2);
+
     let startPage = Math.max(1, currentPage - halfWindow);
+
     const endPage = Math.min(totalPages, startPage + pageWindow - 1);
 
     if (endPage - startPage + 1 < pageWindow) {
@@ -65,17 +78,56 @@ function Feed() {
     return Array.from({ length: endPage - startPage + 1 }, (_, index) => startPage + index);
   }, [currentPage, totalPages]);
 
+  const handleTabChange = (tab: "feed" | "friends") => {
+    setActiveTab(tab);
+
+    // Start from page 1 when switching feeds
+    setPage(1);
+  };
+
   return (
     <>
-      <h1 className="mb-5 text-2xl font-semibold tracking-tight">Home</h1>
+      {/* Tabs */}
+      <div className="mb-10 flex justify-center">
+        <div className="flex rounded-xl bg-muted p-1">
+          <button
+            type="button"
+            onClick={() => handleTabChange("feed")}
+            className={`rounded-lg px-6 py-2 text-sm font-medium transition ${
+              activeTab === "feed"
+                ? "bg-background shadow-sm"
+                : "cursor-pointer text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            Feed
+          </button>
 
+          <button
+            type="button"
+            onClick={() => handleTabChange("friends")}
+            className={`rounded-lg px-6 py-2 text-sm font-medium transition ${
+              activeTab === "friends"
+                ? "bg-background shadow-sm"
+                : "cursor-pointer text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            Friends Feed
+          </button>
+        </div>
+      </div>
+
+      {/* Loading */}
       {isLoading ? (
         <Loader label="Loading posts" />
       ) : !posts.length ? (
         <EmptyState
           icon={MessageSquareDashed}
-          title="No posts yet"
-          description="Be the first to share something with your friends."
+          title={activeTab === "friends" ? "No posts from your friends" : "No posts yet"}
+          description={
+            activeTab === "friends"
+              ? "Your friends haven't shared any posts yet."
+              : "Be the first to share something with your friends."
+          }
           action={
             <Button className="rounded-full" onClick={() => setOpen(true)}>
               Create post
@@ -84,6 +136,7 @@ function Feed() {
         />
       ) : (
         <div className="space-y-4">
+          {/* Posts */}
           {posts.map((post) => (
             <PostCard
               key={post.id}
@@ -91,12 +144,17 @@ function Feed() {
               user={post.user}
               isOwner={post.user_id === user?.id}
               onEdit={async (id, content, image) => {
-                await edit.mutateAsync({ id, content, image });
+                await edit.mutateAsync({
+                  id,
+                  content,
+                  image,
+                });
               }}
               onDelete={(id) => remove.mutateAsync(id)}
             />
           ))}
 
+          {/* Pagination */}
           <div className="flex flex-col gap-3 border-t border-border/60 pt-5 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm text-muted-foreground">
               Page {currentPage} of {totalPages}
@@ -139,7 +197,8 @@ function Feed() {
         </div>
       )}
 
-      {user ? (
+      {/* Create post */}
+      {user && (
         <>
           <Button
             onClick={() => setOpen(true)}
@@ -157,8 +216,6 @@ function Feed() {
             }}
           />
         </>
-      ) : (
-        ""
       )}
     </>
   );

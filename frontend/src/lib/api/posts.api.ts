@@ -25,13 +25,23 @@ export interface UserPostsResponse {
   posts: UserPostsData;
 }
 export async function fetchFeed(page: number = 1, limit: number = 15) {
-  const response = await apiClient.get<FeedResponse>("/feed", {
+  const { data } = await apiClient.get<FeedResponse>("/feed", {
     params: {
       page,
       limit,
     },
   });
-  return response.data.posts;
+  return data.posts;
+}
+
+export async function fetchFriendsFeed(page: number = 1, limit: number = 15) {
+  const { data } = await apiClient.get<FeedResponse>("/feed/friends", {
+    params: {
+      page,
+      limit,
+    },
+  });
+  return data.posts;
 }
 
 export async function fetchUserPosts(username: string): Promise<UserPostsData> {

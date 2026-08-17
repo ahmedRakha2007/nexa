@@ -98,6 +98,7 @@
   }
 
   body {
+    font-family: "Space Grotesk", sans-serif;
     background-color: var(--color-background);
     color: var(--color-foreground);
     -webkit-font-smoothing: antialiased;
