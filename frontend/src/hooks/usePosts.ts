@@ -6,6 +6,8 @@ import {
   fetchFeed,
   fetchFriendsFeed,
   fetchUserPosts,
+  likePost,
+  unlikePost,
   updatePost,
   UserPostsData,
 } from "@/lib/api/posts.api";
@@ -35,7 +37,7 @@ export function useUserPosts(username: string) {
   });
 }
 
-export function usePostMutations(author: User | null) {
+export function usePostMutations() {
   const queryClient = useQueryClient();
 
   const invalidate = () => queryClient.invalidateQueries({ queryKey: ["posts"] });
@@ -64,5 +66,29 @@ export function usePostMutations(author: User | null) {
     },
   });
 
-  return { create, edit, remove };
+  const like = useMutation({
+    mutationFn: (postId: string) => likePost(postId),
+
+    onSuccess: () => {
+      invalidate();
+    },
+
+    onError: (error: Error) => {
+      toast.error(error.message || "Unable to like post");
+    },
+  });
+
+  const unlike = useMutation({
+    mutationFn: (postId: string) => unlikePost(postId),
+
+    onSuccess: () => {
+      invalidate();
+    },
+
+    onError: (error: Error) => {
+      toast.error(error.message || "Unable to unlike post");
+    },
+  });
+
+  return { create, edit, remove, like, unlike };
 }

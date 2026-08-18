@@ -121,3 +121,13 @@ export async function deletePost(id: string): Promise<void> {
     throw new Error(getErrorMessage(error, "Unable to delete post"));
   }
 }
+
+export const likePost = async (postId: string) => {
+  const { data } = await apiClient.post(`/posts/${postId}/likes`);
+  return data;
+};
+
+export const unlikePost = async (postId: string) => {
+  const { data } = await apiClient.delete(`/posts/${postId}/likes`);
+  return data;
+};

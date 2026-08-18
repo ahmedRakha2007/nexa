@@ -26,6 +26,8 @@ interface PostCardProps {
   isOwner: boolean;
   onEdit: (id: string, content: string, image?: File | null) => Promise<void> | void;
   onDelete: (id: string) => Promise<void> | void;
+  onLike: (id: string) => Promise<void> | void;
+  onUnLike: (id: string) => Promise<void> | void;
   user: {
     display_name: string;
     username: string;
@@ -33,7 +35,15 @@ interface PostCardProps {
   };
 }
 
-export function PostCard({ post, user, isOwner, onEdit, onDelete }: PostCardProps) {
+export function PostCard({
+  post,
+  user,
+  isOwner,
+  onEdit,
+  onDelete,
+  onLike,
+  onUnLike,
+}: PostCardProps) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(post.content ?? "");
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -248,6 +258,37 @@ export function PostCard({ post, user, isOwner, onEdit, onDelete }: PostCardProp
           className="mt-4 aspect-16/10 w-full rounded-xl object-cover"
         />
       ) : null}
+
+      <div className="mt-4 flex items-center border-t border-border/60 pt-3">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="gap-2 rounded-full"
+          onClick={async () => {
+            if (post.is_liked) {
+              await onUnLike(post.id);
+            } else {
+              await onLike(post.id);
+            }
+          }}
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill={post.is_liked ? "currentColor" : "none"}
+            stroke="currentColor"
+            strokeWidth="1.8"
+            className={`h-5 w-5 ${post.is_liked ? "text-red-500" : "text-muted-foreground"}`}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"
+            />
+          </svg>
+
+          <span>{post.likes_count}</span>
+        </Button>
+      </div>
 
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <AlertDialogContent>

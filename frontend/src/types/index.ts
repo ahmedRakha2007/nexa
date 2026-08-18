@@ -19,6 +19,8 @@ export interface Post {
   content?: string;
   image_url?: string | null;
   created_at: string;
+  likes_count: number;
+  is_liked: number;
 }
 
 export interface CreatePostInput {

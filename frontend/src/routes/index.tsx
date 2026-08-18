@@ -48,7 +48,7 @@ function Feed() {
 
   const { data: friendsFeedData, isLoading: isFriendsFeedLoading } = useFriendsFeed(page);
 
-  const { create, edit, remove } = usePostMutations(user);
+  const { create, edit, remove, like, unlike } = usePostMutations();
 
   // Decide which data to display
   const activeData = activeTab === "feed" ? feedData : friendsFeedData;
@@ -151,6 +151,8 @@ function Feed() {
                 });
               }}
               onDelete={(id) => remove.mutateAsync(id)}
+              onLike={() => like.mutateAsync(post.id)}
+              onUnLike={() => unlike.mutateAsync(post.id)}
             />
           ))}
 
