@@ -7,8 +7,8 @@ export const getFeed = async (req: Request<{}, {}, {}, {page?: string, limit?: s
 
     const page = Number(req.query.page) || 1;
     const limit = Number(req.query.limit) || 10;
-    const {userId} = req.user!
-    const posts = await getFeedService(userId, page, limit);
+    const { userId } = req.user!
+    const posts = await getFeedService(page, limit, userId);
     
     res.status(200).json({
         success: true,
