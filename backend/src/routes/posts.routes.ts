@@ -88,7 +88,7 @@ postRoutes.post(
  *       404:
  *         description: Post not found
  */
-postRoutes.get("/:postId", optionalAuthMiddleware, postIdValidation, validateRequest, getPost);
+postRoutes.get("/:id", optionalAuthMiddleware, postIdValidation, validateRequest, getPost);
 
 /**
  * @swagger
