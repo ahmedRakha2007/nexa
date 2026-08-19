@@ -18,7 +18,7 @@ export const getProfilePosts = async (req: Request<{ username: string }, {}, {},
     const { username } = req.params;
     const page = Number(req.query.page) || 1
     const limit = Number(req.query.limit) || 10
-    const { userId } = req.user!
+    const userId = req.user?.userId
     const posts = await getProfilePostsService(username, page, limit, userId);
     return res.status(200).json({
         success: true,

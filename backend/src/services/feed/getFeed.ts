@@ -3,7 +3,7 @@ import { prisma } from "../../config/prisma.ts";
 const getFeedService = async (
   page: number,
   limit: number,
-  userId?: string
+  userId: string | undefined
 ) => {
   const [totalPosts, posts] = await Promise.all([
     prisma.post.count({}),

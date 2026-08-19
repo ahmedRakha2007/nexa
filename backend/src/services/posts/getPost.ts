@@ -3,7 +3,7 @@ import { prisma } from "../../config/prisma.ts";
 
 export const getPostService = async (
   postId: string,
-  userId?: string,
+  userId: string | undefined,
 ) => {
   const post = await prisma.post.findUnique({
     where: {

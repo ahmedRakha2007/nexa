@@ -5,7 +5,7 @@ const getProfilePostsService = async (
   username: string,
   page: number,
   limit: number,
-  userId?: string
+  userId: string | undefined
 ) => {
   const user = await prisma.user.findUnique({
     where: {

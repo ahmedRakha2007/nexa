@@ -23,11 +23,11 @@ export async function createPost(req: Request & { user?: { userId: string } }, r
         });
 }
 
-export const getPost = async (req: Request<{ postId: string }> & {user?: { userId: string }}, res: Response) => {
+export const getPost = async (req: Request<{ id: string }> & {user?: { userId: string }}, res: Response) => {
 
-    const { postId } = req.params;
-    const { userId } = req.user!
-    const post = await getPostService(postId, userId);
+    const { id } = req.params;
+    const userId = req.user?.userId
+    const post = await getPostService(id, userId);
 
     res.status(200).json({
       success: true,
