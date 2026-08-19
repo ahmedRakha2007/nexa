@@ -2,8 +2,8 @@ import createError from "http-errors";
 import { prisma } from "../../config/prisma.ts";
 
 export const getPostService = async (
-  userId: string | undefined,
-  postId: string
+  postId: string,
+  userId?: string,
 ) => {
   const post = await prisma.post.findUnique({
     where: {
