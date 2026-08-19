@@ -44,6 +44,11 @@ export async function fetchFriendsFeed(page: number = 1, limit: number = 15) {
   return data.posts;
 }
 
+export async function getPost(postId: string) {
+  const { data } = await apiClient.get(`posts/${postId}`);
+  return data.post;
+}
+
 export async function fetchUserPosts(username: string): Promise<UserPostsData> {
   const { data } = await apiClient.get<UserPostsResponse>(`/profile/${username}/posts`);
 

@@ -63,5 +63,3 @@ export const editPostValidation = [
         return true;
     }),
 ];
-;
-//# sourceMappingURL=posts.validation.js.map

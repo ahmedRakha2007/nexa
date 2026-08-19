@@ -18,9 +18,27 @@ export const getPostService = async (
           profile_picture_url: true,
         },
       },
+
+      comments: {
+        orderBy: {
+          created_at: "asc",
+        },
+        include: {
+          user: {
+            select: {
+              id: true,
+              username: true,
+              display_name: true,
+              profile_picture_url: true,
+            },
+          },
+        },
+      },
+
       _count: {
         select: {
           likes: true,
+          comments: true,
         },
       },
     },
@@ -44,9 +62,13 @@ export const getPostService = async (
       })
     : null;
 
+
+  const { _count, comments, ...postData } = post;
   return {
-    ...post,
+    ...postData,
+    comments: comments,
     likes_count: post._count.likes,
+    comments_count: post._count.comments,
     is_liked: Boolean(isLiked),
   };
 };

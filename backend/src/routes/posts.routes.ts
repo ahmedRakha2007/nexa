@@ -8,7 +8,9 @@
 import { Router } from "express";
 import authMiddleware from "../middlewares/auth.middleware.ts";
 import {
+  createComment,
   createPost,
+  deleteComment,
   deletePost,
   editPost,
   getPost,
@@ -19,6 +21,7 @@ import {
   createPostValidation,
   editPostValidation,
   postIdValidation,
+  createCommentValidation,
 } from "../middlewares/posts.validation.ts";
 import { validateRequest } from "../middlewares/validateRequest.ts";
 import upload from "../middlewares/upload.middleware.ts";
@@ -173,5 +176,8 @@ postRoutes.delete(
 postRoutes.post("/:postId/likes", authMiddleware, likePost);
 
 postRoutes.delete("/:postId/likes", authMiddleware, unlikePost);
+
+postRoutes.post("/:postId/comments", authMiddleware, createCommentValidation, validateRequest, createComment);
+postRoutes.delete("/:commentId/comments", authMiddleware, deleteComment);
 
 export default postRoutes;

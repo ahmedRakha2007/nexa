@@ -70,10 +70,12 @@ const getFriendsFeedService = async (
           },
         },
 
+
         // Number of likes
         _count: {
           select: {
             likes: true,
+            comments: true
           },
         },
 
@@ -97,6 +99,7 @@ const getFriendsFeedService = async (
 
     return {
       ...postData,
+      comments_count: _count.comments,
       likes_count: _count.likes,
       is_liked: likes.length > 0,
     };

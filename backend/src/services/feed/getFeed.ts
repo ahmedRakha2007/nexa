@@ -30,10 +30,10 @@ const getFeedService = async (
             profile_picture_url: true,
           },
         },
-
         _count: {
           select: {
             likes: true,
+            comments: true,
           },
         },
 
@@ -58,6 +58,7 @@ const getFeedService = async (
 
     return {
       ...postData,
+      comments_count: _count.comments,
       likes_count: _count.likes,
       is_liked: userId ? likes.length > 0 : false,
     };

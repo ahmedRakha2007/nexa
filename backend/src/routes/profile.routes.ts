@@ -16,6 +16,7 @@ import {
 import { updateProfileValidation } from "../middlewares/profile.validation.ts";
 import { validateRequest } from "../middlewares/validateRequest.ts";
 import upload from "../middlewares/upload.middleware.ts";
+import { optionalAuthMiddleware } from "../middlewares/optionalAuth.middleware.ts";
 
 const profileRoutes = Router();
 
@@ -71,7 +72,7 @@ profileRoutes.get("/:username", getProfile);
  *       404:
  *         description: User not found
  */
-profileRoutes.get("/:username/posts", getProfilePosts);
+profileRoutes.get("/:username/posts", optionalAuthMiddleware, getProfilePosts);
 
 /**
  * @swagger

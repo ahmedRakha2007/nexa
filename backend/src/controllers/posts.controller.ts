@@ -5,6 +5,8 @@ import editPostService from "../services/posts/editPost.ts";
 import deletePostService from "../services/posts/deletePost.ts";
 import { likePostService } from "../services/posts/likePost.ts";
 import { unlikePostService } from "../services/posts/unlikePost.ts";
+import createCommentService from "../services/posts/createComment.ts";
+import deleteCommentService from "../services/posts/deleteComment.ts";
 
 
 
@@ -21,7 +23,7 @@ export async function createPost(req: Request & { user?: { userId: string } }, r
         });
 }
 
-export const getPost = async (req: Request<{ postId: string }> & {user?: { userId: string }}, res: Response, next: NextFunction) => {
+export const getPost = async (req: Request<{ postId: string }> & {user?: { userId: string }}, res: Response) => {
 
     const { postId } = req.params;
     const { userId } = req.user!
@@ -33,7 +35,7 @@ export const getPost = async (req: Request<{ postId: string }> & {user?: { userI
     });
 };
 
-export const editPost = async (req: Request<{ id: string }> & { user?: { userId: string } }, res: Response, next: NextFunction) => {
+export const editPost = async (req: Request<{ id: string }> & { user?: { userId: string } }, res: Response) => {
 
     const { id } = req.params;
     const { content } = req.body;
@@ -77,6 +79,27 @@ export const unlikePost = async (req: Request<{ postId: string }> & { user?: { u
         const {userId} = req.user!;
 
         const response = await unlikePostService(userId, postId);
+
+        res.status(200).json(response);
+}
+
+export const createComment = async (req: Request<{ postId: string }> & { user?: { userId: string } }, res:Response, next: NextFunction) => {
+  
+        const { postId } = req.params;
+        const {userId} = req.user!;
+        const {content} = req.body;
+
+        const response = await createCommentService(userId, postId, content);
+
+        res.status(201).json(response);
+}
+
+export const deleteComment = async (req: Request<{ commentId: string }> & { user?: { userId: string } }, res:Response, next: NextFunction) => {
+  
+        const { commentId } = req.params;
+        const {userId} = req.user!;
+
+        const response = await deleteCommentService(userId, commentId);
 
         res.status(200).json(response);
 }
