@@ -19,6 +19,14 @@ cors({
 
 app.use(express.json());
 
+
+
+app.get("/", (req, res) => {
+  res.status(200).json({
+    message: "Nexa API is running",
+  });
+});
+
 app.use(
     "/api-docs",
     swaggerUi.serve,
