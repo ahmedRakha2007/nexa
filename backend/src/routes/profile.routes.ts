@@ -11,6 +11,7 @@ import {
   getProfile,
   getProfileFriendShipStatus,
   getProfilePosts,
+  searchUsers,
   updateProfile,
 } from "../controllers/profile.controller.ts";
 import { updateProfileValidation } from "../middlewares/profile.validation.ts";
@@ -19,6 +20,8 @@ import upload from "../middlewares/upload.middleware.ts";
 import { optionalAuthMiddleware } from "../middlewares/optionalAuth.middleware.ts";
 
 const profileRoutes = Router();
+
+profileRoutes.get("/search", searchUsers);
 
 /**
  * @swagger
@@ -40,6 +43,7 @@ const profileRoutes = Router();
  *         description: User not found
  */
 profileRoutes.get("/:username", getProfile);
+
 
 /**
  * @swagger

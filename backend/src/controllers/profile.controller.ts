@@ -3,6 +3,7 @@ import getProfileService from "../services/profile/getProfile.ts";
 import getProfilePostsService from "../services/profile/getProfilePosts.ts";
 import updateProfileService from "../services/profile/updateProfile.ts";
 import { getProfileFriendShipStatusService } from "../services/profile/getProfileFriendShipStatus.ts";
+import { searchUsersService } from "../services/profile/searchUsers.ts";
 
 
 export const getProfile = async (req: Request<{ username: string }>, res: Response) => {
@@ -59,4 +60,13 @@ export const updateProfile = async (req: Request & { user?: { userId: string } }
         user: response
     })
 
+}
+
+
+export async function searchUsers(req: Request, res: Response) {
+  const query = req.query.q as string;
+
+  const users = await searchUsersService(query);
+
+  res.json({ users });
 }
