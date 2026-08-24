@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
-import { Home, Users, User as UserIcon } from "lucide-react";
+import { Home, Users, User as UserIcon, Search } from "lucide-react";
 import { Navbar } from "./Navbar";
 import { Sidebar } from "./Sidebar";
 import { useAuth } from "@/hooks/useAuth";
@@ -8,6 +8,7 @@ import { useAuth } from "@/hooks/useAuth";
 const mobileItems = [
   { to: "/", label: "Home", icon: Home },
   { to: "/friends", label: "Friends", icon: Users },
+  { to: "/search", label: "Search", icon: Search },
 ] as const;
 
 export function AppLayout({ children }: { children: ReactNode }) {

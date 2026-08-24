@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Home, Users, User as UserIcon, LogOut } from "lucide-react";
+import { Home, Users, User as UserIcon, LogOut, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { UserAvatar } from "@/components/common/UserAvatar";
 import { useAuth } from "@/hooks/useAuth";
@@ -18,6 +18,7 @@ import {
 export const navItems = [
   { to: "/", label: "Home", icon: Home },
   { to: "/friends", label: "Friends", icon: Users },
+  { to: "/search", label: "Search", icon: Search },
 ] as const;
 
 export function Navbar() {

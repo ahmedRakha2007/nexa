@@ -2,6 +2,7 @@ import { fetchProfileFriendShipStatus, fetchUserProfile } from "@/lib/api/profil
 import { useQuery } from "@tanstack/react-query";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateProfile } from "@/lib/api/profile.api";
+import { searchUsers } from "@/lib/api/users.api";
 
 export function useUserProfile(username: string) {
   return useQuery({
@@ -15,6 +16,14 @@ export function useProfileFriendShipStatus(username: string) {
   return useQuery({
     queryKey: ["friendship-status", username],
     queryFn: () => fetchProfileFriendShipStatus(username),
+  });
+}
+
+export function useSearchUsers(query: string) {
+  return useQuery({
+    queryKey: ["users", "search", query],
+    queryFn: () => searchUsers(query),
+    enabled: query.trim().length >= 2,
   });
 }
 

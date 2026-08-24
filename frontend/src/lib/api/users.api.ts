@@ -1,5 +1,3 @@
-import type { UpdateProfileInput, User } from "@/types";
-import { usersSeed } from "@/lib/placeholder-data";
 import { apiClient } from "./client";
 
 interface friendship {
@@ -85,4 +83,14 @@ export async function removeFriend(id: string): Promise<string> {
   const response = await apiClient.delete(`/friend-requests/${id}`);
 
   return response.data.message;
+}
+
+export async function searchUsers(query: string) {
+  const response = await apiClient.get("/profile/search", {
+    params: {
+      q: query,
+    },
+  });
+
+  return response.data.users;
 }
