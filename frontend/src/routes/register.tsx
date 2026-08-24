@@ -8,6 +8,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { register as registerUser } from "@/lib/api/auth.api";
 import { useAuth } from "@/hooks/useAuth";
+import { useState } from "react";
+import axios from "axios";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/register")({
   head: () => ({
@@ -32,7 +35,25 @@ const schema = z
       .min(3, "At least 3 characters")
       .regex(/^[a-z0-9_.]+$/, "Lowercase letters, numbers, underscores and dots only"),
     email: z.string().email("Enter a valid email"),
-    birth_date: z.string().min(1, "Birth date is required"),
+    birth_date: z
+      .string()
+      .min(1, "Birth date is required")
+      .refine((date) => {
+        const birthDate = new Date(date);
+        const today = new Date();
+
+        let age = today.getFullYear() - birthDate.getFullYear();
+
+        const hasHadBirthday =
+          today.getMonth() > birthDate.getMonth() ||
+          (today.getMonth() === birthDate.getMonth() && today.getDate() >= birthDate.getDate());
+
+        if (!hasHadBirthday) {
+          age--;
+        }
+
+        return age >= 18;
+      }, "You must be at least 18 years old"),
     password: z.string().min(6, "At least 6 characters"),
     confirm_password: z.string(),
   })
@@ -53,6 +74,7 @@ const fields: { name: keyof FormValues; label: string; type?: string }[] = [
 ];
 
 function RegisterPage() {
+  const [serverError, setServerError] = useState<string | null>(null);
   const navigate = useNavigate();
   const { signIn } = useAuth();
   const form = useForm<FormValues>({
@@ -68,12 +90,23 @@ function RegisterPage() {
   });
 
   const submit = form.handleSubmit(async (values) => {
+    setServerError(null);
+
     const { confirm_password, ...registerData } = values;
 
-    const result = await registerUser(registerData);
+    try {
+      const result = await registerUser(registerData);
 
-    signIn(result.user, result.token);
-    navigate({ to: "/" });
+      signIn(result.user, result.token);
+      toast.success("Account created successfully!");
+      navigate({ to: "/" });
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        setServerError(error.response?.data?.message ?? "Something went wrong. Please try again.");
+      } else {
+        setServerError("Something went wrong. Please try again.");
+      }
+    }
   });
 
   return (
@@ -106,6 +139,8 @@ function RegisterPage() {
             ) : null}
           </div>
         ))}
+
+        {serverError ? <p className="text-sm text-destructive">{serverError}</p> : null}
 
         <Button
           type="submit"

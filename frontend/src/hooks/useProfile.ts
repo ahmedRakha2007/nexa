@@ -24,9 +24,9 @@ export function useUpdateProfile() {
   return useMutation({
     mutationFn: updateProfile,
 
-    onSuccess: (updatedUser) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["profile"],
+        queryKey: ["users", "profile"],
       });
     },
   });

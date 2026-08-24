@@ -1,31 +1,41 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
+  createComment,
   createPost,
+  deleteComment,
   deletePost,
   fetchFeed,
   fetchFriendsFeed,
   fetchUserPosts,
+  getPost,
   likePost,
   unlikePost,
   updatePost,
   UserPostsData,
 } from "@/lib/api/posts.api";
-import type { CreatePostInput, UpdatePostInput, User } from "@/types";
+import type {
+  CreateCommentInput,
+  CreatePostInput,
+  DeleteCommentInput,
+  UpdatePostInput,
+} from "@/types";
 
 export const feedQueryKey = ["posts", "feed"] as const;
 
-export function useFeed(page: number) {
+export function useFeed(page: number, enabled = true) {
   return useQuery({
     queryKey: ["posts", "feed", page],
     queryFn: () => fetchFeed(page),
+    enabled,
   });
 }
 
-export function useFriendsFeed(page: number) {
+export function useFriendsFeed(page: number, enabled = true) {
   return useQuery({
     queryKey: ["posts", "feed", "friends", page],
     queryFn: () => fetchFriendsFeed(page),
+    enabled,
   });
 }
 
@@ -37,6 +47,14 @@ export function useUserPosts(username: string) {
   });
 }
 
+export function usePost(postId: string) {
+  return useQuery({
+    queryKey: ["post", postId],
+    queryFn: () => getPost(postId),
+    enabled: !!postId,
+  });
+}
+
 export function usePostMutations() {
   const queryClient = useQueryClient();
 
@@ -44,51 +62,88 @@ export function usePostMutations() {
 
   const create = useMutation({
     mutationFn: (input: CreatePostInput) => createPost(input),
-    onSuccess: invalidate,
-    onError: (error: Error) => {
-      toast.error(error.message || "Unable to create post");
+
+    onSuccess: () => {
+      invalidate();
+      toast.success("Your post was created successfully");
     },
   });
 
   const edit = useMutation({
     mutationFn: (input: UpdatePostInput) => updatePost(input),
-    onSuccess: invalidate,
-    onError: (error: Error) => {
-      toast.error(error.message || "Unable to update post");
+
+    onSuccess: () => {
+      invalidate();
+      toast.success("Your post was updated successfully");
     },
   });
 
   const remove = useMutation({
     mutationFn: (id: string) => deletePost(id),
-    onSuccess: invalidate,
-    onError: (error: Error) => {
-      toast.error(error.message || "Unable to delete post");
+
+    onSuccess: () => {
+      invalidate();
+      toast.success("Your post was deleted successfully");
     },
   });
 
   const like = useMutation({
     mutationFn: (postId: string) => likePost(postId),
 
-    onSuccess: () => {
+    onSuccess: (_, postId) => {
       invalidate();
-    },
 
-    onError: (error: Error) => {
-      toast.error(error.message || "Unable to like post");
+      queryClient.invalidateQueries({
+        queryKey: ["post", postId],
+      });
     },
   });
 
   const unlike = useMutation({
     mutationFn: (postId: string) => unlikePost(postId),
 
-    onSuccess: () => {
+    onSuccess: (_, postId) => {
       invalidate();
-    },
 
-    onError: (error: Error) => {
-      toast.error(error.message || "Unable to unlike post");
+      queryClient.invalidateQueries({
+        queryKey: ["post", postId],
+      });
     },
   });
 
-  return { create, edit, remove, like, unlike };
+  const addComment = useMutation({
+    mutationFn: (input: CreateCommentInput) => createComment(input),
+
+    onSuccess: (_, variables) => {
+      invalidate();
+
+      queryClient.invalidateQueries({
+        queryKey: ["post", variables.postId],
+      });
+    },
+  });
+
+  const removeComment = useMutation({
+    mutationFn: (input: DeleteCommentInput) => deleteComment(input.commentId),
+
+    onSuccess: (_, variables) => {
+      invalidate();
+
+      queryClient.invalidateQueries({
+        queryKey: ["post", variables.postId],
+      });
+
+      toast.success("Comment deleted");
+    },
+  });
+
+  return {
+    create,
+    edit,
+    remove,
+    like,
+    unlike,
+    addComment,
+    removeComment,
+  };
 }

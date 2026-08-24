@@ -44,9 +44,12 @@ function Feed() {
   const [activeTab, setActiveTab] = useState<"feed" | "friends">("feed");
   const [open, setOpen] = useState(false);
 
-  const { data: feedData, isLoading: isFeedLoading } = useFeed(page);
+  const { data: feedData, isLoading: isFeedLoading } = useFeed(page, activeTab === "feed");
 
-  const { data: friendsFeedData, isLoading: isFriendsFeedLoading } = useFriendsFeed(page);
+  const { data: friendsFeedData, isLoading: isFriendsFeedLoading } = useFriendsFeed(
+    page,
+    activeTab === "friends",
+  );
 
   const { create, edit, remove, like, unlike } = usePostMutations();
 
@@ -129,9 +132,13 @@ function Feed() {
               : "Be the first to share something with your friends."
           }
           action={
-            <Button className="rounded-full" onClick={() => setOpen(true)}>
-              Create post
-            </Button>
+            activeTab === "feed" ? (
+              <Button className="rounded-full" onClick={() => setOpen(true)}>
+                Create post
+              </Button>
+            ) : (
+              ""
+            )
           }
         />
       ) : (

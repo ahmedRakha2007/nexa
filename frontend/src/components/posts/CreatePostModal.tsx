@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Modal } from "@/components/common/Modal";
 
 import type { CreatePostInput } from "@/types";
+import axios from "axios";
 
 const schema = z.object({
   content: z.string().max(500, "500 characters max"),
@@ -72,13 +73,16 @@ export function CreatePostModal({ open, onOpenChange, onSubmit }: CreatePostModa
         content: content || undefined,
         image,
       });
-
       form.reset();
       setPreview(null);
       onOpenChange(false);
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Unable to create post";
-      setSubmitError(message);
+      if (axios.isAxiosError(error)) {
+        const message = error.response?.data?.message;
+        setSubmitError(message ?? "Unable to create post");
+      } else {
+        setSubmitError("Unable to create post");
+      }
     }
   });
 

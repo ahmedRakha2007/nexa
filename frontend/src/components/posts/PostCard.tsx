@@ -19,7 +19,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { UserAvatar } from "@/components/common/UserAvatar";
-import type { Post, User } from "@/types";
+import type { Post } from "@/types";
+import { Link } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
+import PostLikeButton from "./PostLikeButton";
 
 interface PostCardProps {
   post: Post;
@@ -51,7 +54,7 @@ export function PostCard({
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
-
+  const navigate = useNavigate();
   useEffect(() => {
     if (!selectedImage) {
       setPreview(post.image_url ?? null);
@@ -153,7 +156,7 @@ export function PostCard({
         ) : null}
       </header>
 
-      {editing ? (
+      {editing && (
         <div className="mt-4 space-y-3">
           <Textarea
             value={draft}
@@ -246,52 +249,31 @@ export function PostCard({
             </Button>
           </div>
         </div>
-      ) : (
-        <p className="mt-4 whitespace-pre-wrap text-[15px] leading-relaxed">{post.content}</p>
+      )}
+      {!editing && (
+        <Link to="/post/$postId" params={{ postId: post.id }} className="block">
+          {post.content ? (
+            <p className="mt-4 whitespace-pre-wrap text-[15px] leading-relaxed">{post.content}</p>
+          ) : null}
+
+          {post.image_url ? (
+            <img
+              src={post.image_url}
+              alt=""
+              loading="lazy"
+              className="mt-4 aspect-16/10 w-full rounded-xl object-cover"
+            />
+          ) : null}
+        </Link>
       )}
 
-      {!editing && post.image_url ? (
-        <img
-          src={post.image_url}
-          alt=""
-          loading="lazy"
-          className="mt-4 aspect-16/10 w-full rounded-xl object-cover"
-        />
-      ) : null}
-
-      <div className="mt-4 flex items-center border-t border-border/60 pt-3">
-        <Button
-          variant="ghost"
-          size="sm"
-          className="gap-2 rounded-full"
-          onClick={async () => {
-            if (post.is_liked) {
-              await onUnLike(post.id);
-            } else {
-              await onLike(post.id);
-            }
-          }}
-        >
-          <svg
-            viewBox="0 0 24 24"
-            fill={post.is_liked ? "currentColor" : "none"}
-            stroke="currentColor"
-            strokeWidth="1.8"
-            className={`h-5 w-5 ${post.is_liked ? "text-red-500" : "text-muted-foreground"}`}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"
-            />
-          </svg>
-
-          <span>{post.likes_count}</span>
-        </Button>
+      <div className="mt-4 flex items-center justify-between border-t border-border/60 pt-3">
+        <PostLikeButton post={post} onLike={onLike} onUnLike={onUnLike} />
+        <div>Comments ({post.comments_count})</div>
       </div>
 
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <AlertDialogContent>
+        <AlertDialogContent className="w-[calc(100%-2rem)] max-w-md rounded-2xl p-5 sm:w-full sm:p-6">
           <AlertDialogHeader>
             <AlertDialogTitle>Delete this post?</AlertDialogTitle>
             <AlertDialogDescription>

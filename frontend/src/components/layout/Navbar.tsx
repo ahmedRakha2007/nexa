@@ -3,6 +3,17 @@ import { Home, Users, User as UserIcon, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { UserAvatar } from "@/components/common/UserAvatar";
 import { useAuth } from "@/hooks/useAuth";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export const navItems = [
   { to: "/", label: "Home", icon: Home },
@@ -52,15 +63,37 @@ export function Navbar() {
           {user ? (
             <>
               <UserAvatar user={user} size="sm" />
-              <Button
-                variant="ghost"
-                size="icon"
-                aria-label="Sign out"
-                onClick={signOut}
-                className="rounded-full"
-              >
-                <LogOut className="size-4" />
-              </Button>
+
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    aria-label="Sign out"
+                    className="rounded-full"
+                  >
+                    <LogOut className="size-4" />
+                  </Button>
+                </AlertDialogTrigger>
+
+                <AlertDialogContent className="w-[calc(100%-2rem)] max-w-md rounded-2xl p-5 sm:w-full sm:p-6">
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Sign out?</AlertDialogTitle>
+
+                    <AlertDialogDescription>
+                      Are you sure you want to sign out of your account?
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+
+                  <AlertDialogFooter>
+                    <AlertDialogCancel className="bg-secondary">Cancel</AlertDialogCancel>
+
+                    <AlertDialogAction className="bg-destructive" onClick={signOut}>
+                      Sign out
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </>
           ) : (
             <Link to="/login">

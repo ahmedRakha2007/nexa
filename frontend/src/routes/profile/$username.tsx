@@ -19,8 +19,7 @@ import {
 } from "@/components/ui/dialog";
 
 import { EditProfileForm } from "@/components/profile/EditProfileForm";
-import { useState } from "react";
-import { Toast } from "@/components/ui/toast";
+import { useEffect, useState } from "react";
 import { useFriendMutations } from "@/hooks/useFriends";
 
 export const Route = createFileRoute("/profile/$username")({
@@ -39,19 +38,18 @@ function Profile() {
   const { user } = useAuth();
   const { username } = Route.useParams();
 
-  const { edit, remove } = usePostMutations(user);
+  const { edit, remove, like, unlike } = usePostMutations();
 
   const [editOpen, setEditOpen] = useState(false);
-  const [showToast, setShowToast] = useState(false);
 
   const { data: profile, isLoading: loadingProfile } = useUserProfile(username);
 
   const { data: postsData, isLoading: loadingPosts } = useUserPosts(username);
 
-  const { data: friendshipStatusData, isLoading: loadingFriendshipStatus } =
-    useProfileFriendShipStatus(username);
+  const { data: friendshipStatusData } = useProfileFriendShipStatus(username);
 
   const { accept, reject, cancel, deleteFriend, addFriend } = useFriendMutations();
+
   if (loadingProfile) {
     return <Loader />;
   }
@@ -73,18 +71,18 @@ function Profile() {
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-8">
       {/* Profile header */}
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <ProfileHeader profile={profile} />
 
         {/* Profile actions */}
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2 sm:shrink-0">
           {isOwner ? (
             <Dialog open={editOpen} onOpenChange={setEditOpen}>
               <DialogTrigger asChild>
                 <Button variant="secondary">Edit Profile</Button>
               </DialogTrigger>
 
-              <DialogContent className="sm:max-w-md">
+              <DialogContent className="w-[calc(100%-2rem)] max-w-md rounded-2xl p-5 sm:w-full sm:p-6">
                 <DialogHeader>
                   <DialogTitle className="text-xl">Edit Profile</DialogTitle>
                 </DialogHeader>
@@ -93,7 +91,6 @@ function Profile() {
                   profile={profile}
                   onSuccess={() => {
                     setEditOpen(false);
-                    setShowToast(true);
                   }}
                 />
               </DialogContent>
@@ -193,15 +190,6 @@ function Profile() {
             </>
           )}
         </div>
-
-        {showToast && (
-          <Toast
-            title="Profile updated"
-            description="Your changes have been saved."
-            open={showToast}
-            onOpenChange={setShowToast}
-          />
-        )}
       </div>
 
       {/* Posts */}
@@ -227,6 +215,8 @@ function Profile() {
                     });
                   }}
                   onDelete={(id) => remove.mutateAsync(id)}
+                  onLike={() => like.mutateAsync(post.id)}
+                  onUnLike={() => unlike.mutateAsync(post.id)}
                 />
               ))
             ) : (

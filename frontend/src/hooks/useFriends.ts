@@ -10,6 +10,7 @@ import {
   removeFriend,
   sendFriendRequest,
 } from "@/lib/api/users.api";
+import { toast } from "sonner";
 
 export function useFriends(query: string) {
   return useQuery({
@@ -47,6 +48,8 @@ export function useFriendMutations() {
       queryClient.invalidateQueries({
         queryKey: ["friendship-status", variables.username],
       });
+
+      toast.success("Friend request sent");
     },
   });
 
@@ -66,6 +69,8 @@ export function useFriendMutations() {
       queryClient.invalidateQueries({
         queryKey: ["friendship-status", variables.username],
       });
+
+      toast.success("Friend request accepted");
     },
   });
 
@@ -111,6 +116,8 @@ export function useFriendMutations() {
       queryClient.invalidateQueries({
         queryKey: ["friendship-status", variables.username],
       });
+
+      toast.success("Friend removed");
     },
   });
 

@@ -1,4 +1,4 @@
-import type { CreatePostInput, Post, UpdatePostInput, User } from "@/types";
+import type { Comment, CreateCommentInput, CreatePostInput, Post, UpdatePostInput } from "@/types";
 import { apiClient } from "./client";
 import axios from "axios";
 
@@ -24,6 +24,10 @@ export interface UserPostsResponse {
   success: boolean;
   posts: UserPostsData;
 }
+
+export interface GetPost extends Post {
+  comments: Comment[];
+}
 export async function fetchFeed(page: number = 1, limit: number = 15) {
   const { data } = await apiClient.get<FeedResponse>("/feed", {
     params: {
@@ -44,9 +48,9 @@ export async function fetchFriendsFeed(page: number = 1, limit: number = 15) {
   return data.posts;
 }
 
-export async function getPost(postId: string) {
+export async function getPost(postId: string): Promise<GetPost> {
   const { data } = await apiClient.get(`posts/${postId}`);
-  return data.post;
+  return data.data;
 }
 
 export async function fetchUserPosts(username: string): Promise<UserPostsData> {
@@ -135,4 +139,17 @@ export const likePost = async (postId: string) => {
 export const unlikePost = async (postId: string) => {
   const { data } = await apiClient.delete(`/posts/${postId}/likes`);
   return data;
+};
+
+export const createComment = async ({ content, postId }: CreateCommentInput): Promise<Comment> => {
+  const { data } = await apiClient.post(`/posts/${postId}/comments`, {
+    content,
+  });
+
+  return data.data;
+};
+
+export const deleteComment = async (commentId: string): Promise<string> => {
+  const { data } = await apiClient.delete(`/posts/${commentId}/comments`);
+  return data.message;
 };

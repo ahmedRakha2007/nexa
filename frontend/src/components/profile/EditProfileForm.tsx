@@ -9,6 +9,9 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useUpdateProfile } from "@/hooks/useProfile";
 import type { UserProfileData } from "@/lib/api/profile.api";
+import { useNavigate } from "@tanstack/react-router";
+import { toast } from "sonner";
+import axios from "axios";
 
 const schema = z.object({
   display_name: z.string().trim().min(2, "Display name must be at least 2 characters"),
@@ -31,7 +34,8 @@ type EditProfileFormProps = {
 
 export function EditProfileForm({ profile, onSuccess }: EditProfileFormProps) {
   const { updateUser } = useAuth();
-
+  const navigate = useNavigate();
+  const [serverError, setServerError] = useState<string | null>(null);
   const updateProfileMutation = useUpdateProfile();
 
   const [imagePreview, setImagePreview] = useState(profile.profile_picture_url ?? "");
@@ -79,6 +83,8 @@ export function EditProfileForm({ profile, onSuccess }: EditProfileFormProps) {
   };
 
   const submit = form.handleSubmit(async (values) => {
+    setServerError(null);
+
     const formData = new FormData();
 
     formData.append("display_name", values.display_name);
@@ -89,11 +95,30 @@ export function EditProfileForm({ profile, onSuccess }: EditProfileFormProps) {
       formData.append("profile_image", imageFile);
     }
 
-    const updatedUser = await updateProfileMutation.mutateAsync(formData);
+    try {
+      const updatedUser = await updateProfileMutation.mutateAsync(formData);
 
-    updateUser(updatedUser);
+      updateUser(updatedUser);
 
-    onSuccess?.();
+      toast.success("Your changes have been saved");
+
+      onSuccess?.();
+
+      navigate({
+        to: "/profile/$username",
+        params: {
+          username: updatedUser.username,
+        },
+      });
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        setServerError(
+          error.response?.data?.message ?? "Failed to update your profile. Please try again.",
+        );
+      } else {
+        setServerError("Something went wrong. Please try again.");
+      }
+    }
   });
 
   return (
@@ -176,9 +201,7 @@ export function EditProfileForm({ profile, onSuccess }: EditProfileFormProps) {
       </div>
 
       {/* Error from API */}
-      {updateProfileMutation.isError && (
-        <p className="text-sm text-destructive">Failed to update your profile. Please try again.</p>
-      )}
+      {serverError && <p className="text-sm text-destructive"> {serverError} </p>}
 
       {/* Actions */}
       <div className="flex justify-end gap-2 pt-2">

@@ -10,7 +10,8 @@ import { Label } from "@/components/ui/label";
 import { login } from "@/lib/api/auth.api";
 import { useAuth } from "@/hooks/useAuth";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -37,8 +38,14 @@ const schema = z.object({
 
 function LoginPage() {
   const navigate = useNavigate();
-  const { signIn } = useAuth();
+  const { signIn, user } = useAuth();
   const [loginError, setLoginError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (user) {
+      navigate({ to: "/" });
+    }
+  }, [user, navigate]);
 
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
@@ -53,7 +60,7 @@ function LoginPage() {
       const result = await login(values);
 
       signIn(result.user, result.token);
-
+      toast.success("Welcome back!");
       navigate({ to: "/" });
     } catch (error) {
       if (axios.isAxiosError(error)) {
