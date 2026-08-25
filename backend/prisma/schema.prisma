@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
-
 generator client {
   provider               = "prisma-client"
   output                 = "../src/generated/prisma"
@@ -28,16 +25,23 @@ enum FriendshipStatus {
   CANCELED
 }
 
+enum NotificationType {
+  FRIEND_REQUEST
+  FRIEND_ACCEPTED
+  POST_LIKED
+  POST_COMMENTED
+}
+
 model User {
-  id                  String          @id @default(uuid()) @db.Uuid
+  id                  String       @id @default(uuid()) @db.Uuid
 
   display_name        String
-  username            String          @unique
-  email               String          @unique
+  username            String       @unique
+  email               String       @unique
 
   password_hash       String?
-  provider            AuthProvider    @default(LOCAL)
-  provider_id         String?         @unique
+  provider            AuthProvider @default(LOCAL)
+  provider_id         String?      @unique
 
   birth_date          DateTime
 
@@ -45,50 +49,51 @@ model User {
   profile_picture_id  String?
   bio                 String?
 
-  created_at          DateTime        @default(now())
-  updated_at          DateTime        @updatedAt
+  created_at          DateTime     @default(now())
+  updated_at          DateTime     @updatedAt
 
   posts               Post[]
-
   likes               PostLike[]
-
   comments            Comment[]
 
-  sent_requests       Friendship[]    @relation("SentRequests")
-  received_requests   Friendship[]    @relation("ReceivedRequests")
+  sent_requests       Friendship[] @relation("SentRequests")
+  received_requests   Friendship[] @relation("ReceivedRequests")
+
+  notifications_received Notification[] @relation("NotificationRecipient")
+  notifications_sent     Notification[] @relation("NotificationActor")
 }
 
 model Post {
-  id          String    @id @default(uuid()) @db.Uuid
+  id               String    @id @default(uuid()) @db.Uuid
 
-  content     String?
-  image_url   String?
-  image_public_id   String?
+  content          String?
+  image_url        String?
+  image_public_id  String?
 
-  user_id     String    @db.Uuid
-  user        User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id          String    @db.Uuid
+  user             User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
-  likes       PostLike[]
+  likes            PostLike[]
+  comments         Comment[]
+  notifications    Notification[]
 
-  comments    Comment[]
-
-  created_at  DateTime  @default(now())
-  updated_at  DateTime  @updatedAt
+  created_at       DateTime  @default(now())
+  updated_at       DateTime  @updatedAt
 }
 
 model Friendship {
-  id           String              @id @default(uuid()) @db.Uuid
+  id           String           @id @default(uuid()) @db.Uuid
 
-  sender_id    String              @db.Uuid
-  receiver_id  String              @db.Uuid
+  sender_id    String           @db.Uuid
+  receiver_id  String           @db.Uuid
 
-  sender       User                @relation("SentRequests", fields: [sender_id], references: [id], onDelete: Cascade)
-  receiver     User                @relation("ReceivedRequests", fields: [receiver_id], references: [id], onDelete: Cascade)
+  sender       User             @relation("SentRequests", fields: [sender_id], references: [id], onDelete: Cascade)
+  receiver     User             @relation("ReceivedRequests", fields: [receiver_id], references: [id], onDelete: Cascade)
 
-  status       FriendshipStatus    @default(PENDING)
+  status       FriendshipStatus @default(PENDING)
 
-  created_at   DateTime            @default(now())
-  updated_at   DateTime            @updatedAt
+  created_at   DateTime         @default(now())
+  updated_at   DateTime         @updatedAt
 
   @@unique([sender_id, receiver_id])
 }
@@ -98,23 +103,45 @@ model PostLike {
   post_id    String   @db.Uuid
   created_at DateTime @default(now())
 
-  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  post Post @relation(fields: [post_id], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  post       Post     @relation(fields: [post_id], references: [id], onDelete: Cascade)
 
   @@id([user_id, post_id])
 }
 
- model Comment {
+model Comment {
   id         String   @id @default(uuid()) @db.Uuid
   user_id    String   @db.Uuid
   post_id    String   @db.Uuid
+
   content    String
+
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  post Post @relation(fields: [post_id], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  post       Post     @relation(fields: [post_id], references: [id], onDelete: Cascade)
 
   @@index([post_id])
   @@index([user_id])
+}
+
+model Notification {
+  id           String           @id @default(uuid()) @db.Uuid
+  recipient_id String           @db.Uuid
+  actor_id     String           @db.Uuid
+
+  type         NotificationType
+
+  post_id      String?          @db.Uuid
+
+  is_read      Boolean          @default(false)
+  created_at   DateTime         @default(now())
+
+  recipient User @relation("NotificationRecipient", fields: [recipient_id], references: [id], onDelete: Cascade)
+  actor     User @relation("NotificationActor", fields: [actor_id], references: [id], onDelete: Cascade)
+  post      Post? @relation(fields: [post_id], references: [id], onDelete: Cascade)
+
+  @@index([recipient_id, is_read])
+  @@index([recipient_id, created_at])
 }

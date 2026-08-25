@@ -1,5 +1,6 @@
 import { prisma } from "../../config/prisma.ts";
 import createError from "http-errors";
+import { createNotification } from "../notification/createNotification.ts";
 
 export const likePostService = async (
   userId: string,
@@ -11,6 +12,7 @@ export const likePostService = async (
     },
     select: {
       id: true,
+      user_id: true
     },
   });
 
@@ -40,6 +42,15 @@ export const likePostService = async (
       post_id: postId,
     },
   });
+
+   if (post.user_id !== userId) {
+  await createNotification({
+    recipientId: post.user_id,
+    actorId: userId,
+    type: "POST_LIKED",
+    postId: post.id,
+  });
+}
 
   return {
     success: true,

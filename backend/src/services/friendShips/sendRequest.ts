@@ -1,5 +1,6 @@
 import createError from "http-errors";
 import { prisma } from "../../config/prisma.ts";
+import { createNotification } from "../notification/createNotification.ts";
 
 const sendRequestService = async (
   userId: string,
@@ -50,6 +51,12 @@ const sendRequestService = async (
       },
     });
 
+     await createNotification({
+      recipientId: receiver_id,
+      actorId: userId,
+      type: "FRIEND_REQUEST",
+    })
+
     return;
   }
 
@@ -74,6 +81,12 @@ const sendRequestService = async (
       status: "PENDING",
     },
   });
+
+   await createNotification({
+      recipientId: receiver_id,
+      actorId: userId,
+      type: "FRIEND_REQUEST",
+    })
 };
 
 export default sendRequestService;

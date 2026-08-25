@@ -1,5 +1,6 @@
 import createError from "http-errors";
 import { prisma } from "../../config/prisma.ts";
+import { createNotification } from "../notification/createNotification.ts";
 
 const acceptFriendRequestService = async (
   id: string,
@@ -39,6 +40,12 @@ const acceptFriendRequestService = async (
       status: "ACCEPTED",
     },
   });
+  
+  await createNotification({
+    recipientId: userId,
+    actorId: friendship.receiver_id,
+    type: "FRIEND_ACCEPTED",
+  })
 };
 
 export default acceptFriendRequestService;

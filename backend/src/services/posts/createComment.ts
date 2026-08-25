@@ -1,5 +1,6 @@
 import { prisma } from "../../config/prisma.ts";
 import createError from "http-errors";
+import { createNotification } from "../notification/createNotification.ts";
 
 const createCommentService = async (
   userId: string,
@@ -12,6 +13,7 @@ const createCommentService = async (
     },
     select: {
       id: true,
+      user_id: true
     },
   });
 
@@ -36,6 +38,15 @@ const createCommentService = async (
       },
     },
   });
+
+  if (userId !== post.user_id) {
+    await createNotification({
+      recipientId: post.user_id,
+      actorId: userId,
+      type: "POST_COMMENTED",
+      postId: post.id,
+    });
+  }
 
   return comment;
 };
