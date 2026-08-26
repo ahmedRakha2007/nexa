@@ -1,8 +1,12 @@
 import { Link } from "@tanstack/react-router";
-import { Home, Users, User as UserIcon, LogOut, Search } from "lucide-react";
+
+import { Home, Users, User as UserIcon, LogOut, Search, Bell } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { UserAvatar } from "@/components/common/UserAvatar";
 import { useAuth } from "@/hooks/useAuth";
+import { useNotifications } from "@/hooks/useNotifications";
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -23,6 +27,9 @@ export const navItems = [
 
 export function Navbar() {
   const { user, signOut } = useAuth();
+  const { data: notifications = [] } = useNotifications();
+
+  const unreadCount = notifications.filter((notification) => !notification.is_read).length;
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-xl">
@@ -42,6 +49,7 @@ export function Navbar() {
               {item.label}
             </Link>
           ))}
+
           {user ? (
             <Link
               to="/profile/$username"
@@ -63,6 +71,20 @@ export function Navbar() {
         <div className="flex shrink-0 items-center gap-2">
           {user ? (
             <>
+              <Link
+                to="/notifications"
+                className="relative rounded-full p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                aria-label="Notifications"
+              >
+                <Bell className="size-5" />
+
+                {unreadCount > 0 && (
+                  <span className="absolute -right-0.5 -top-0.5 flex size-4 items-center justify-center rounded-full bg-destructive text-[10px] font-medium text-destructive-foreground">
+                    {unreadCount > 9 ? "9+" : unreadCount}
+                  </span>
+                )}
+              </Link>
+
               <UserAvatar user={user} size="sm" />
 
               <AlertDialog>
@@ -80,7 +102,6 @@ export function Navbar() {
                 <AlertDialogContent className="w-[calc(100%-2rem)] max-w-md rounded-2xl p-5 sm:w-full sm:p-6">
                   <AlertDialogHeader>
                     <AlertDialogTitle>Sign out?</AlertDialogTitle>
-
                     <AlertDialogDescription>
                       Are you sure you want to sign out of your account?
                     </AlertDialogDescription>
