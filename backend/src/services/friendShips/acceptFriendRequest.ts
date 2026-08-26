@@ -13,6 +13,7 @@ const acceptFriendRequestService = async (
     select: {
       id: true,
       receiver_id: true,
+      sender_id: true,
       status: true,
     },
   });
@@ -42,8 +43,8 @@ const acceptFriendRequestService = async (
   });
   
   await createNotification({
-    recipientId: userId,
-    actorId: friendship.receiver_id,
+    recipientId: friendship.sender_id,
+    actorId: userId,
     type: "FRIEND_ACCEPTED",
   })
 };
