@@ -38,6 +38,7 @@ app.use("/v1/posts", postRoutes);
 app.use("/v1/profile", profileRoutes);
 app.use("/v1/feed", feedRouter);
 app.use("/v1/friend-requests", friendShipRouter);
+app.use("/v1/notifications", );
 
 app.use(errorHandler);
 
