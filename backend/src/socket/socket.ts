@@ -9,7 +9,7 @@ export const initializeSocket = (server: any) => {
     cors: {
       origin: [
     "http://localhost:8080",
-    "https://nexa-1-jh4m.onrender.com/",
+    "https://nexa-1-jh4m.onrender.com",
   ],
     },
   });
