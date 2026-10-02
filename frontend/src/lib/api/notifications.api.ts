@@ -11,8 +11,9 @@ export interface Notification {
   id: string;
   recipient_id: string;
   actor_id: string;
-  type: "FRIEND_REQUEST" | "FRIEND_ACCEPTED" | "POST_LIKED" | "POST_COMMENTED";
+  type: "FRIEND_REQUEST" | "FRIEND_ACCEPTED" | "POST_LIKED" | "POST_COMMENTED" | "MESSAGE_RECEIVED";
   post_id: string | null;
+  conversation_id: string | null;
   is_read: boolean;
   created_at: string;
   actor: NotificationActor;

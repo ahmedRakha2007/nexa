@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 
 import { usePostMutations, useUserPosts } from "@/hooks/usePosts";
 import { useProfileFriendShipStatus, useUserProfile } from "@/hooks/useProfile";
@@ -19,8 +19,10 @@ import {
 } from "@/components/ui/dialog";
 
 import { EditProfileForm } from "@/components/profile/EditProfileForm";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useFriendMutations } from "@/hooks/useFriends";
+import { useCreateConversation } from "@/hooks/useConversations";
+import { MessageCircle } from "lucide-react";
 
 export const Route = createFileRoute("/profile/$username")({
   component: ProfilePage,
@@ -38,6 +40,8 @@ function Profile() {
   const { user } = useAuth();
   const { username } = Route.useParams();
 
+  const navigate = useNavigate();
+
   const { edit, remove, like, unlike } = usePostMutations();
 
   const [editOpen, setEditOpen] = useState(false);
@@ -49,6 +53,8 @@ function Profile() {
   const { data: friendshipStatusData } = useProfileFriendShipStatus(username);
 
   const { accept, reject, cancel, deleteFriend, addFriend } = useFriendMutations();
+
+  const { mutateAsync: createConversation } = useCreateConversation();
 
   if (loadingProfile) {
     return <Loader />;
@@ -101,6 +107,26 @@ function Profile() {
                 ""
               ) : (
                 <>
+                  {friendshipStatusData?.status === "ACCEPTED" && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="rounded-full gap-2"
+                      onClick={async () => {
+                        const conversation = await createConversation(profile.id);
+
+                        navigate({
+                          to: "/chat/$conversationId",
+                          params: {
+                            conversationId: conversation.id,
+                          },
+                        });
+                      }}
+                    >
+                      <MessageCircle className="size-4" />
+                      Chat
+                    </Button>
+                  )}
                   {/* No friendship */}
                   {friendshipStatusData?.status === "NONE" && (
                     <Button

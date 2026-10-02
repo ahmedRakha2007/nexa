@@ -24,39 +24,17 @@ export interface Post {
   is_liked: number;
 }
 
-export interface Comment {
+export interface Message {
   id: string;
-  user_id: string;
-  post_id: string;
+  conversation_id: string;
+  sender_id: string;
   content: string;
   created_at: string;
   updated_at: string;
-  user: { id: string; username: string; display_name: string; profile_picture_url: string };
-}
-
-export interface CreatePostInput {
-  content?: string;
-  image?: File | null;
-}
-
-export interface CreateCommentInput {
-  content: string;
-  postId: string;
-}
-export interface DeleteCommentInput {
-  commentId: string;
-  postId: string;
-}
-
-export interface UpdatePostInput {
-  id: string;
-  content?: string;
-  image?: File | null;
-}
-
-export interface UpdateProfileInput {
-  display_name?: string;
-  username?: string;
-  bio?: string;
-  avatar_url?: string;
+  sender: {
+    id: string;
+    username: string;
+    display_name: string | null;
+    profile_picture_url: string | null;
+  };
 }

@@ -10,17 +10,24 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ConversationsRouteImport } from './routes/conversations'
 import { Route as FriendsRouteImport } from './routes/friends'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as SearchRouteImport } from './routes/search'
+import { Route as ChatConversationIdRouteImport } from './routes/chat/$conversationId'
 import { Route as PostPostIdRouteImport } from './routes/post/$postId'
 import { Route as ProfileUsernameRouteImport } from './routes/profile/$username'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConversationsRoute = ConversationsRouteImport.update({
+  id: '/conversations',
+  path: '/conversations',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FriendsRoute = FriendsRouteImport.update({
@@ -48,6 +55,11 @@ const SearchRoute = SearchRouteImport.update({
   path: '/search',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ChatConversationIdRoute = ChatConversationIdRouteImport.update({
+  id: '/chat/$conversationId',
+  path: '/chat/$conversationId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PostPostIdRoute = PostPostIdRouteImport.update({
   id: '/post/$postId',
   path: '/post/$postId',
@@ -61,32 +73,38 @@ const ProfileUsernameRoute = ProfileUsernameRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/conversations': typeof ConversationsRoute
   '/friends': typeof FriendsRoute
   '/login': typeof LoginRoute
   '/notifications': typeof NotificationsRoute
   '/register': typeof RegisterRoute
   '/search': typeof SearchRoute
+  '/chat/$conversationId': typeof ChatConversationIdRoute
   '/post/$postId': typeof PostPostIdRoute
   '/profile/$username': typeof ProfileUsernameRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/conversations': typeof ConversationsRoute
   '/friends': typeof FriendsRoute
   '/login': typeof LoginRoute
   '/notifications': typeof NotificationsRoute
   '/register': typeof RegisterRoute
   '/search': typeof SearchRoute
+  '/chat/$conversationId': typeof ChatConversationIdRoute
   '/post/$postId': typeof PostPostIdRoute
   '/profile/$username': typeof ProfileUsernameRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/conversations': typeof ConversationsRoute
   '/friends': typeof FriendsRoute
   '/login': typeof LoginRoute
   '/notifications': typeof NotificationsRoute
   '/register': typeof RegisterRoute
   '/search': typeof SearchRoute
+  '/chat/$conversationId': typeof ChatConversationIdRoute
   '/post/$postId': typeof PostPostIdRoute
   '/profile/$username': typeof ProfileUsernameRoute
 }
@@ -94,42 +112,50 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/conversations'
     | '/friends'
     | '/login'
     | '/notifications'
     | '/register'
     | '/search'
+    | '/chat/$conversationId'
     | '/post/$postId'
     | '/profile/$username'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/conversations'
     | '/friends'
     | '/login'
     | '/notifications'
     | '/register'
     | '/search'
+    | '/chat/$conversationId'
     | '/post/$postId'
     | '/profile/$username'
   id:
     | '__root__'
     | '/'
+    | '/conversations'
     | '/friends'
     | '/login'
     | '/notifications'
     | '/register'
     | '/search'
+    | '/chat/$conversationId'
     | '/post/$postId'
     | '/profile/$username'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ConversationsRoute: typeof ConversationsRoute
   FriendsRoute: typeof FriendsRoute
   LoginRoute: typeof LoginRoute
   NotificationsRoute: typeof NotificationsRoute
   RegisterRoute: typeof RegisterRoute
   SearchRoute: typeof SearchRoute
+  ChatConversationIdRoute: typeof ChatConversationIdRoute
   PostPostIdRoute: typeof PostPostIdRoute
   ProfileUsernameRoute: typeof ProfileUsernameRoute
 }
@@ -141,6 +167,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/conversations': {
+      id: '/conversations'
+      path: '/conversations'
+      fullPath: '/conversations'
+      preLoaderRoute: typeof ConversationsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/friends': {
@@ -178,6 +211,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SearchRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/chat/$conversationId': {
+      id: '/chat/$conversationId'
+      path: '/chat/$conversationId'
+      fullPath: '/chat/$conversationId'
+      preLoaderRoute: typeof ChatConversationIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/post/$postId': {
       id: '/post/$postId'
       path: '/post/$postId'
@@ -197,11 +237,13 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ConversationsRoute: ConversationsRoute,
   FriendsRoute: FriendsRoute,
   LoginRoute: LoginRoute,
   NotificationsRoute: NotificationsRoute,
   RegisterRoute: RegisterRoute,
   SearchRoute: SearchRoute,
+  ChatConversationIdRoute: ChatConversationIdRoute,
   PostPostIdRoute: PostPostIdRoute,
   ProfileUsernameRoute: ProfileUsernameRoute,
 }

@@ -146,5 +146,15 @@ function getNotificationContent(notification: Notification) {
           username: notification.actor.username,
         },
       };
+
+    case "MESSAGE_RECEIVED":
+      return {
+        icon: MessageCircle,
+        message: "You got a message.",
+        to: "/chat/$conversation" as const,
+        params: {
+          conversation: notification.conversation_id,
+        },
+      };
   }
 }

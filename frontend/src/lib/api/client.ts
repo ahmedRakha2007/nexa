@@ -1,11 +1,7 @@
 import axios from "axios";
 
-/**
- * Axios instance — point VITE_API_URL at your backend when it exists.
- * No backend calls are wired up yet; see the *.api.ts modules for placeholders.
- */
 export const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_URL ?? "/api",
+  baseURL: `${import.meta.env.VITE_API_URL}/v1`,
 });
 
 apiClient.interceptors.request.use((config) => {
@@ -20,3 +16,19 @@ apiClient.interceptors.request.use((config) => {
 
   return config;
 });
+
+apiClient.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem("nexa.token");
+      localStorage.removeItem("nexa.user");
+
+      window.location.href = "/login";
+    }
+
+    return Promise.reject(error);
+  },
+);

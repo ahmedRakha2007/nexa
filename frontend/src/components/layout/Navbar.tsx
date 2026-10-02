@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 
-import { Home, Users, User as UserIcon, LogOut, Search, Bell } from "lucide-react";
+import { Home, Users, User as UserIcon, LogOut, Search, Bell, MessageCircle } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { UserAvatar } from "@/components/common/UserAvatar";
@@ -23,6 +23,7 @@ export const navItems = [
   { to: "/", label: "Home", icon: Home },
   { to: "/friends", label: "Friends", icon: Users },
   { to: "/search", label: "Search", icon: Search },
+  { to: "/conversations", label: "Chats", icon: MessageCircle },
 ] as const;
 
 export function Navbar() {
