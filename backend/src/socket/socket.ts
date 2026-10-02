@@ -7,7 +7,10 @@ import { setIO } from "./io.ts";
 export const initializeSocket = (server: any) => {
   const io = new Server(server, {
     cors: {
-      origin: "http://localhost:8080",
+      origin: [
+    "http://localhost:8080",
+    "https://nexa-1-zm4u.onrender.com",
+  ],
     },
   });
 
