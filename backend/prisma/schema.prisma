@@ -30,6 +30,7 @@ enum NotificationType {
   FRIEND_ACCEPTED
   POST_LIKED
   POST_COMMENTED
+  MESSAGE_RECEIVED
 }
 
 model User {
@@ -55,6 +56,8 @@ model User {
   posts               Post[]
   likes               PostLike[]
   comments            Comment[]
+  conversations       ConversationMember[]
+  sent_messages       Message[]
 
   sent_requests       Friendship[] @relation("SentRequests")
   received_requests   Friendship[] @relation("ReceivedRequests")
@@ -135,13 +138,58 @@ model Notification {
 
   post_id      String?          @db.Uuid
 
+  conversation_id  String?      @db.Uuid 
+
   is_read      Boolean          @default(false)
   created_at   DateTime         @default(now())
 
   recipient User @relation("NotificationRecipient", fields: [recipient_id], references: [id], onDelete: Cascade)
   actor     User @relation("NotificationActor", fields: [actor_id], references: [id], onDelete: Cascade)
   post      Post? @relation(fields: [post_id], references: [id], onDelete: Cascade)
+  conversation Conversation? @relation(fields: [conversation_id], references: [id], onDelete: Cascade)
 
   @@index([recipient_id, is_read])
   @@index([recipient_id, created_at])
+}
+
+model Conversation {
+  id         String                @id @default(uuid()) @db.Uuid
+  created_at DateTime              @default(now())
+  updated_at DateTime              @updatedAt
+
+  notifications  Notification[]
+
+  members    ConversationMember[]
+  messages   Message[]
+}
+
+model ConversationMember {
+  conversation_id String       @db.Uuid
+  user_id         String       @db.Uuid
+
+  conversation    Conversation @relation(fields: [conversation_id], references: [id], onDelete: Cascade)
+  user            User         @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  joined_at       DateTime     @default(now())
+
+  @@id([conversation_id, user_id])
+  @@index([user_id])
+}
+
+model Message {
+  id              String       @id @default(uuid()) @db.Uuid
+
+  conversation_id String       @db.Uuid
+  sender_id       String       @db.Uuid
+
+  content         String
+
+  created_at      DateTime     @default(now())
+  updated_at      DateTime     @updatedAt
+
+  conversation    Conversation @relation(fields: [conversation_id], references: [id], onDelete: Cascade)
+  sender          User         @relation(fields: [sender_id], references: [id], onDelete: Cascade)
+
+  @@index([conversation_id, created_at])
+  @@index([sender_id])
 }

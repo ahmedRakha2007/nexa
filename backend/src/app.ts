@@ -9,6 +9,7 @@ import swaggerUi from "swagger-ui-express";
 import swaggerSpec from "./config/swagger.ts";
 import cors from "cors";
 import notificationRouter from "./routes/notification.routes.ts";
+import conversationRouter from "./routes/conversation.routes.ts";
 
 const app = express();
 
@@ -40,6 +41,7 @@ app.use("/v1/profile", profileRoutes);
 app.use("/v1/feed", feedRouter);
 app.use("/v1/friend-requests", friendShipRouter);
 app.use("/v1/notifications", notificationRouter);
+app.use("/v1/conversations", conversationRouter);
 
 app.use(errorHandler);
 

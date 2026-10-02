@@ -44,7 +44,7 @@ export const likePostService = async (
   });
 
    if (post.user_id !== userId) {
-  await createNotification({
+  const notification = await createNotification({
     recipientId: post.user_id,
     actorId: userId,
     type: "POST_LIKED",
