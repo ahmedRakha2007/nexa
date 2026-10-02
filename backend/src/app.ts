@@ -17,7 +17,7 @@ app.use(
 cors({
     origin: [
     "http://localhost:8080",
-    "https://nexa-1-zm4u.onrender.com",
+    "https://nexa-1-jh4m.onrender.com/",
   ],
   })
 );
